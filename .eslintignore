@@ -1,0 +1,4 @@
+src/utilities/cssParseSync.js
+test/fixtures
+**/app/public
+node_modules

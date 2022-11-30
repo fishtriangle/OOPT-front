@@ -1,0 +1,46 @@
+.markersBlock {
+  &_label {
+    font-size: 1.25rem;
+    margin: 0;
+    padding: 6px 17px;
+    line-height: 1em;
+    background: linear-gradient(180deg, rgba(255,214,99,1) 0%, rgba(255,197,37,1) 100%);
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  &_marker {
+    transition: 0.3s;
+
+    &__checked {
+      opacity: 0.5;
+    }
+  }
+
+  &_topLeftCorner {
+    position: relative;
+    top: 5px;
+    left: -20px;
+    transform: rotateY(180deg);
+  }
+
+  &_topRightCorner {
+    position: relative;
+    top: 5px;
+    right: calc(-100% + 153px);
+  }
+
+  &_bottomLeftCorner {
+    position: relative;
+    top: -92px;
+    left: -20px;
+    transform: rotateY(180deg) rotateX(180deg);
+  }
+
+  &_bottomRightCorner {
+    position: relative;
+    top: -92px;
+    right: calc(-100% + 153px);
+    transform: rotateX(180deg);
+  }
+}

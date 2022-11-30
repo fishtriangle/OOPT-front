@@ -1,0 +1,29 @@
+.h1 {
+  flex: 7 1;
+
+  p {
+    font-weight: 700;
+    font-size: 70px;
+    line-height: 70px;
+    text-transform: uppercase;
+  }
+}
+
+.back {
+  font-size: 32px;
+  color: #A7A7A7;
+  min-width: 316px;
+}
+
+.text {
+  font-weight: normal;
+  font-size: 40px;
+
+  &__long {
+    height: 90%;
+  }
+
+  &__short {
+    height: 65%;
+  }
+}

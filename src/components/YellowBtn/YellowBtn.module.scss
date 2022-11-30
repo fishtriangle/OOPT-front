@@ -1,0 +1,16 @@
+.yellowBtn {
+  display: flex;
+  justify-content: center;
+
+  span {
+    text-transform: uppercase;
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: black;
+    padding: 20px 60px;
+    background: linear-gradient(180deg, rgba(255,214,99,1) 0%, rgba(255,197,37,1) 100%);
+    border-radius: 0.5rem;
+    cursor: pointer;
+  }
+}

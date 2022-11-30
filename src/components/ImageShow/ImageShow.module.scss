@@ -1,0 +1,45 @@
+.ImageShow {
+
+  &_bg {
+    z-index: 100;
+  }
+
+  &_img {
+    z-index: 101;
+    width: 1600px;
+    transition: 0.75s;
+    transform: scale(1.1);
+    opacity: 0;
+  }
+
+  &_img__show {
+    transform: scale(1)!important;
+    opacity: 1;
+  }
+
+  &_imgControl {
+    width: 50px;
+    fill: white;
+  }
+
+  &_imgControlLeft {
+
+    transform: rotate(180deg) translateX(90px);
+
+  }
+
+  &_imgControlRight {
+
+    transform: translateX(90px);
+
+  }
+
+  &_closeBtn {
+    position: absolute;
+    z-index: 101;
+    top: 67px;
+    right: 61px;
+    width: 60px;
+    height: 60px;
+  }
+}

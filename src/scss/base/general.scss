@@ -1,0 +1,85 @@
+@font-face {
+  font-weight: 1000;
+  font-family: 'Columba Ruby Pro';
+  src: url('../../../public/fonts/ColumbaRubyPro-Ultra.ttf');
+}
+
+@font-face {
+  font-weight: bold;
+  font-family: 'Columba Ruby Pro';
+  src: url('../../../public/fonts/ColumbaRubyPro-Bold.ttf');
+}
+
+@font-face {
+  font-weight: 500;
+  font-family: 'Columba Ruby Pro';
+  src: url('../../../public/fonts/ColumbaRubyPro-Medium.ttf');
+}
+
+@font-face {
+  font-weight: normal;
+  font-family: 'Columba Ruby Pro';
+  src: url('../../../public/fonts/ColumbaRubyPro-Regular.ttf');
+}
+
+body {
+  width: 3840px;
+  height: 2160px;
+
+  overflow: hidden;
+  background-color: white;
+
+  font-family: "Columba Ruby Pro";
+  color: $primary;
+
+  /**
+ * Для эксплорера
+ */
+  -ms-user-select: none;
+
+  /**
+   * Для мозилы
+   */
+  -moz-user-select: none;
+
+  /**
+   * Для конкверора
+   */
+  -khtml-user-select: none;
+
+  /**
+   * Для Сафари и Хрома
+   */
+  -webkit-user-select: none;
+
+  user-select: none;
+
+  -webkit-text-size-adjust:none;
+  -ms-text-size-adjust:none;
+  -moz-text-size-adjust:none;
+  text-size-adjust:none;
+}
+
+#root {
+  overflow: hidden;
+  height: inherit;
+  width: inherit;
+}
+
+.App {
+  height: inherit;
+  width: inherit;
+  position: relative;
+}
+
+p {
+  margin-bottom: 0.5rem;
+}
+
+ul {
+  margin-bottom: 0.5rem;
+}
+
+textarea {
+  resize: none;
+}

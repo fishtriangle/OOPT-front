@@ -1,0 +1,34 @@
+.h1 {
+  font-weight: 1000;
+  font-size: 70px;
+  line-height: 70px;
+  text-transform: uppercase;
+  margin-bottom: 30px;
+}
+
+.h2 {
+  font-weight: 1000;
+  font-size: 50px;
+  line-height: 50px;
+  margin-bottom: 40px;
+}
+
+.listBlock {
+  height: 85%;
+}
+
+.listSubHead {
+  font-weight: bold;
+  font-size: 50px;
+  text-transform: uppercase;
+}
+
+.list {
+  font-weight: bold;
+  font-size: 50px;
+  color: #8B8A63;
+  text-transform: uppercase;
+  margin-left: 60px;
+}
+
+/*# sourceMappingURL=Tracks.module.css.map */

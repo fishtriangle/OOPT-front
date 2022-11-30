@@ -1,0 +1,18 @@
+.h1 {
+  font-weight: 1000;
+  font-size: 70px;
+  line-height: 70px;
+}
+
+.text {
+  font-weight: normal;
+  font-size: 40px;
+}
+.text__long {
+  height: 90%;
+}
+.text__short {
+  height: 65%;
+}
+
+/*# sourceMappingURL=AboutOOPT.module.css.map */

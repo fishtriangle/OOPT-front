@@ -1,0 +1,59 @@
+$gray-base: #efefef;
+$primary: #D9DF72;
+$secondary: #201a05;
+$light: #fbfbfb;
+$dark: #323232;
+
+//$theme-colors: ("gray-base": $gray-base);
+
+$font-size-root: 26px;
+
+$grid-breakpoints: (
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px,
+  xxl: 1600px
+);
+
+$container-max-widths: (
+  sm: 540px,
+  md: 720px,
+  lg: 960px,
+  xl: 1140px,
+  xxl: 1540px
+);
+
+$enable-shadows: true;
+
+$grid-gutter-width: 0;
+
+$sides: (
+  "all",
+  "top",
+  "bottom",
+  "left",
+  "rigth"
+);
+
+$spacer: 1rem;
+
+$spacers: (
+        0: 0,
+        1: $spacer * .25,
+        2: $spacer * .5,
+        3: $spacer,
+        4: $spacer * 1.5,
+        5: $spacer * 3,
+        6: $spacer * 4.5,
+        7: $spacer * 8.5,
+);
+
+//heights
+$h-main-paddings: 48px;
+$h-header: 72px;
+$h-findform: 159px;
+$h-chatblock-send-sm: 75px;
+$h-chatblock-send-lg: 83px;
+$h-chatblock-header: 91px;

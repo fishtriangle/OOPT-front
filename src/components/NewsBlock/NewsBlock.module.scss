@@ -1,0 +1,25 @@
+.NewsBlock {
+  &_tableContainer {
+    height: 620px;
+    overflow-y: scroll;
+    padding-right: 25px;
+    //margin-right: 100px;
+
+    &::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+    &::-webkit-scrollbar-track {
+      background-color: #42403a;
+      border-radius: 20px;
+      border: 9px;
+      border-color: black;
+
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: #ffe59d;
+      border-radius: 15px;
+      border: 1px;
+    }
+  }
+}

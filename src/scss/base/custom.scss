@@ -1,0 +1,103 @@
+.block-bg {
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(5px);
+  border-radius: 10px;
+  padding: 40px 70px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  clip: rect(0, 0, 0, 0);
+}
+
+.one-stroke {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.text-primary {
+  color: $primary!important;
+}
+
+.text-dark {
+  color: $dark!important;
+}
+
+.text-danger {
+  color: red!important;
+}
+
+.fs-0 {
+  font-size: 4.5rem!important;
+}
+
+.w-h-inherit {
+  width: inherit;
+  height: inherit;
+}
+
+.h-60 {
+  height: 60%!important;
+}
+
+.h-75 {
+  height: 75%!important;
+}
+
+.h-80 {
+  height: 80%!important;
+}
+
+.w-70 {
+  width: 70%!important;
+}
+
+.w-90 {
+  width: 90%!important;
+}
+
+.w-950p {
+  width: 950px;
+}
+
+.add-scrollbar {
+  overflow-y: scroll;
+  padding-right: 100px;
+
+  &::-webkit-scrollbar {
+    width: 40px;
+  }
+  &::-webkit-scrollbar-track {
+    background-color: #ECECEC;
+    border-radius: 40px;
+    border: 4px #CCCCCC;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: #CCCCCC;
+    border-radius: 20px;
+  }
+}
+
+.add-scrollbar-custom {
+  overflow-y: scroll;
+  height: 87%;
+  padding-right: 15px;
+
+  &::-webkit-scrollbar {
+    width: 10px;
+  }
+  &::-webkit-scrollbar-track {
+    background-color: #ffffff;
+    border-radius: 20px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: #FFC40B;
+    border-radius: 20px;
+  }
+}

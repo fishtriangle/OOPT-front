@@ -1,0 +1,46 @@
+.container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 400px;
+  background-color: black;
+  padding: 110px 400px;
+  transition: transform 0.4s;
+
+  &__hide {
+    transform: translateY(-300px);
+  }
+}
+
+.nav {
+  color: white;
+  font-size: 50px;
+  font-weight: 500;
+
+  &__chosen {
+    color: #aeb25b;
+  }
+
+  &__unChosen {
+    color: #ffffff;
+  }
+}
+
+.hideBtn {
+  width: 180px;
+  height: 180px;
+  background-color: #D9DF72;
+  padding: 30px;
+  border-radius: 180px;
+  transform: rotate(-90deg);
+  position: absolute;
+  bottom: -90px;
+  right: 300px;
+
+  transition: transform 0.3s;
+
+  &__pressed {
+    transform: rotate(90deg);
+  }
+}

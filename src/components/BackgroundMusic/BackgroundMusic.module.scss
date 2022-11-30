@@ -1,0 +1,18 @@
+.BackgroundMusic {
+  position: absolute;
+  top: 60px;
+  left: 60px;
+  width: 70px;
+  height: 70px;
+
+  &_icon {
+    &__active {
+      enableBackground: new 0 0 58 58;
+      fill: #ffe59d;
+    }
+    &__notActive {
+      enableBackground: new 0 0 58 58;
+      fill: #a68733;
+    }
+  }
+}
