@@ -19,6 +19,8 @@ import Services from '../Services/Services';
 import Town from '../Town/Town';
 import Master from '../Master/Master';
 import Service from '../Service/Service';
+import Holidays from '../Holidays/Holidays';
+import Holiday from '../Holiday/Holiday';
 
 const DescriptionBlock: React.FC = () => {
   const isHide = useSelector(selectDescriptionBlockIsHide);
@@ -29,15 +31,17 @@ const DescriptionBlock: React.FC = () => {
   const blockMap = {
     [EnumDescriptionBlock.ABOUT]: <AboutOOPT />,
     [EnumDescriptionBlock.TRACKS]: <Tracks />,
-    [EnumDescriptionBlock.POINTS]: <PointsBlock />,
-    [EnumDescriptionBlock.TOWNS]: <Towns />,
-    [EnumDescriptionBlock.MASTERS]: <Masters />,
-    [EnumDescriptionBlock.SERVICE]: <Services />,
     [EnumDescriptionBlock.TRACK]: <Track />,
+    [EnumDescriptionBlock.POINTS]: <PointsBlock />,
     [EnumDescriptionBlock.POINT]: <Point />,
+    [EnumDescriptionBlock.TOWNS]: <Towns />,
     [EnumDescriptionBlock.TOWN]: <Town />,
+    [EnumDescriptionBlock.MASTERS]: <Masters />,
     [EnumDescriptionBlock.MASTER]: <Master />,
+    [EnumDescriptionBlock.SERVICE]: <Services />,
     [EnumDescriptionBlock.SERVICE_ITEM]: <Service />,
+    [EnumDescriptionBlock.HOLIDAYS]: <Holidays />,
+    [EnumDescriptionBlock.HOLIDAY]: <Holiday />,
   };
 
   const handleClickHide = () => {

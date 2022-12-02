@@ -20,6 +20,7 @@ export interface IHoliday {
   alt?: string;
   photos: IPhoto[];
   videos: IVideo[];
+  disabled?: boolean;
 }
 
 export interface IContact {
@@ -34,6 +35,7 @@ export interface IService {
   photos: IPhoto[];
   videos: IVideo[];
   contacts: IContact[];
+  disabled?: boolean;
 }
 
 export interface IMaster {
@@ -43,6 +45,7 @@ export interface IMaster {
   photos: IPhoto[];
   videos: IVideo[];
   contacts: IContact[];
+  disabled?: boolean;
 }
 
 export interface IAxis {
@@ -60,6 +63,7 @@ export interface IPoint {
   photos: IPhoto[];
   videos: IVideo[];
   route?: string;
+  disabled?: boolean;
 }
 
 export interface ITrack {
@@ -76,6 +80,7 @@ export interface ITrack {
   timeInTrack?: string;
   season?: string;
   water?: string;
+  disabled?: boolean;
 }
 
 export interface ITown {
@@ -86,6 +91,7 @@ export interface ITown {
   axis: IAxis[];
   photos: IPhoto[];
   videos: IVideo[];
+  disabled?: boolean;
 }
 
 export interface IOOPT {
@@ -165,6 +171,15 @@ export interface IGetServiceVars {
   serviceUniqueInput: { id: number };
 }
 
+export interface IGetHoliday {
+  getHoliday: IHoliday;
+}
+
+export interface IGetHolidayVars {
+  pollInterval: number;
+  holidayUniqueInput: { id: number };
+}
+
 export interface IEnterprise {
   id: number;
   title?: string;
@@ -230,4 +245,6 @@ export enum EnumDescriptionBlock {
   MASTER = 'master',
   SERVICE = 'service',
   SERVICE_ITEM = 'service_item',
+  HOLIDAYS = 'holidays',
+  HOLIDAY = 'holiday',
 }

@@ -60,7 +60,7 @@ const PointsBlock: React.FC = () => {
       <br />
       <div
         className={`${styles.listBlock} ${
-          points && points?.length > 15 && 'add-scrollbar'
+          points && points?.length > 15 && 'add-scrollbar h-63'
         }`}
       >
         {points

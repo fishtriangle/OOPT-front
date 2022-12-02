@@ -23,6 +23,15 @@ import EditEnterpriseDescription from './pages/EnterpriseEdit/EditEnterpriseDesc
 import { useAppDispatch } from './redux/store';
 import Intro from './pages/Intro/Intro';
 import Bistrinskiy from './pages/Bistrinskiy/Bistrinskiy';
+import Oopts from './pages/admin/oopts/Oopts';
+import Oopt from './pages/admin/oopts/Oopt';
+import Towns from './pages/admin/towns/Towns';
+import Point from './components/Point/Point';
+import Points from './pages/admin/points/Points';
+import Tracks from './pages/admin/tracks/Tracks';
+import Masters from './pages/admin/masters/Masters';
+import Services from './pages/admin/services/Services';
+import Holidays from './pages/admin/holidays/Holidays';
 
 function App() {
   // const dispatch = useAppDispatch();
@@ -45,11 +54,19 @@ function App() {
       <Routes>
         <Route path={'/'} element={<Intro />} />
         <Route path={'bistrinskiy'} element={<Bistrinskiy />} />
-        {/*<Route path={'edit'} element={<Edit />}>*/}
-        {/*  <Route path={'news'} element={<News />} />*/}
-        {/*  <Route path={'editNews/:id'} element={<EditNews />} />*/}
-        {/*  <Route path={'createNews'} element={<CreateNews />} />*/}
-        {/*  <Route*/}
+        <Route path={'admin'} element={<Oopts />} />
+        <Route path={'admin/oopts/:id'} element={<Oopt />} />
+        <Route path={'admin/oopts/:id/towns'} element={<Towns />} />
+        <Route
+          path={'admin/oopts/:id/towns/:townId/points'}
+          element={<Points />}
+        />
+        <Route path={'admin/oopts/:id/points'} element={<Points />} />
+        <Route path={'admin/oopts/:id/tracks'} element={<Tracks />} />
+        <Route path={'admin/oopts/:id/masters'} element={<Masters />} />
+        <Route path={'admin/oopts/:id/services'} element={<Services />} />
+        <Route path={'admin/oopts/:id/holidays'} element={<Holidays />} />
+        {/*  http://localhost:3000/admin/oopts/2/services*/}
         {/*    path={'enterprise/:id/photo'}*/}
         {/*    element={<EditEnterprisePhoto />}*/}
         {/*  />*/}

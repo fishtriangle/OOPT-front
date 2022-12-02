@@ -4,10 +4,11 @@ import DeckGL from '@deck.gl/react/typed';
 // @ts-ignore
 import { TileLayer } from 'deck.gl';
 import { BitmapLayer } from '@deck.gl/layers/typed';
+import image from './16_reversed.jpg';
 
 const INITIAL_VIEW_STATE = {
-  longitude: 159,
-  latitude: 55.98,
+  longitude: 155.560998,
+  latitude: 56.887245,
   zoom: 7,
   maxZoom: 16,
 };
@@ -43,6 +44,11 @@ const Map: React.FC = () => {
           bounds: [west, south, east, north],
         });
       },
+    }),
+    new BitmapLayer({
+      id: 'bitmap-layer',
+      bounds: [155.560998, 56.887245, 161.21871, 55.110854],
+      image: image,
     }),
   ];
 

@@ -13,6 +13,7 @@ import {
 } from '../../redux/slices/descriptionBlockSlice';
 import { useSelector } from 'react-redux';
 import { EnumDescriptionBlock } from '../../common/types';
+import { useNavigate } from 'react-router-dom';
 
 const menuItems = [
   { title: 'Информация о парке', id: EnumDescriptionBlock.ABOUT },
@@ -21,6 +22,7 @@ const menuItems = [
   { title: 'Населённые пункты', id: EnumDescriptionBlock.TOWNS },
   { title: 'Мастера традиционных ремёсел', id: EnumDescriptionBlock.MASTERS },
   { title: 'Туристический сервис', id: EnumDescriptionBlock.SERVICE },
+  { title: 'Национальные праздники', id: EnumDescriptionBlock.HOLIDAYS },
 ];
 
 const MainMenu: React.FC = () => {
@@ -28,6 +30,7 @@ const MainMenu: React.FC = () => {
   const dispatch = useAppDispatch();
   const isDescriptionHide = useSelector(selectDescriptionBlockIsHide);
   const currentActiveBlock = useSelector(selectType);
+  const navigate = useNavigate();
 
   function handleHideClick() {
     setIsHide(!isHide);
@@ -58,6 +61,7 @@ const MainMenu: React.FC = () => {
           src={bistrinskiyLogo}
           alt={'Логотип парк Быстринский'}
           className={'me-2'}
+          onClick={() => navigate('/admin')}
         />
         <Nav
           activeKey={undefined}

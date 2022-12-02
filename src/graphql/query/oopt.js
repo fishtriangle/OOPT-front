@@ -98,6 +98,29 @@ export const GET_OOPT = gql`
   }
 `;
 
+export const GET_OOPT_DESCRIPTION = gql`
+  query GetAllOOPTs($ooptUniqueInput: OoptUniqueInput!) {
+    getOOPT(ooptUniqueInput: $ooptUniqueInput) {
+      id
+      title
+      description
+      photos {
+        id
+        small
+        large
+        description
+        alt
+      }
+      videos {
+        id
+        path
+        description
+        alt
+      }
+    }
+  }
+`;
+
 export const GET_OOPT_ABOUT = gql`
   query GetAllOOPTs($ooptUniqueInput: OoptUniqueInput!) {
     getOOPT(ooptUniqueInput: $ooptUniqueInput) {
@@ -190,6 +213,19 @@ export const GET_OOPT_SERVICES = gql`
         id
         title
       }
+    }
+  }
+`;
+
+export const GET_OOPT_HOLIDAYS = gql`
+  query GetOOPT($ooptUniqueInput: OoptUniqueInput!) {
+    getOOPT(ooptUniqueInput: $ooptUniqueInput) {
+      holidays {
+        id
+        title
+      }
+      id
+      title
     }
   }
 `;

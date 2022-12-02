@@ -2,8 +2,6 @@ import React from 'react';
 import { useQuery } from '@apollo/client';
 import {
   EnumDescriptionBlock,
-  IGetPoint,
-  IGetPointVars,
   IGetTown,
   IGetTownVars,
 } from '../../common/types';
@@ -21,22 +19,23 @@ import {
 import { useAppDispatch } from '../../redux/store';
 
 import { GET_TOWN } from '../../graphql/query/town';
+import { Accordion } from 'react-bootstrap';
 
 const Town: React.FC = () => {
-  const pointId = useSelector(selectCurrentTownId);
+  const townId = useSelector(selectCurrentTownId);
   const dispatch = useAppDispatch();
 
   const { data, loading, error } = useQuery<IGetTown, IGetTownVars>(GET_TOWN, {
     variables: {
       pollInterval: 3000,
-      townUniqueInput: { id: pointId },
+      townUniqueInput: { id: townId },
     },
   });
 
   const handleBackClick = () => {
     dispatch(hideBlock());
     setTimeout(() => {
-      dispatch(setBlockType(EnumDescriptionBlock.POINTS));
+      dispatch(setBlockType(EnumDescriptionBlock.TOWNS));
       dispatch(showBlock());
     }, 1000);
   };
@@ -52,8 +51,8 @@ const Town: React.FC = () => {
       </>
     );
 
-  console.log('4: ', data?.getTown);
   const photos = data?.getTown.photos;
+  const points = data?.getTown.points;
 
   return (
     <div className={'text-black'}>
@@ -62,14 +61,39 @@ const Town: React.FC = () => {
           <p className={styles.h1}>{data?.getTown.title}</p>
         </div>
         <p className={styles.back} onClick={handleBackClick}>
-          К списку маршрутов
+          Назад...
         </p>
       </div>
 
       <br />
-      <div className={`${styles.text}`}>
+      <div
+        className={`${styles.text} ${
+          !photos || photos.length === 0
+            ? styles.text__long
+            : styles.text__short
+        } add-scrollbar`}
+      >
         <Text>{data?.getTown.description}</Text>
+        <br />
+        <div>
+          {points && points.length > 0 && (
+            <div>
+              <p className={'fw-bold text-uppercase'}>Интересные места:</p>
+              <Accordion>
+                {points.map((point) => (
+                  <Accordion.Item eventKey={point.title ?? ''} key={point.id}>
+                    <Accordion.Header className={styles.accordion_header}>
+                      {point.title}
+                    </Accordion.Header>
+                    <Accordion.Body>{point.description}</Accordion.Body>
+                  </Accordion.Item>
+                ))}
+              </Accordion>
+            </div>
+          )}
+        </div>
       </div>
+
       <div className={'mb-5 mx-3 w-90 align-self-center'}>
         {photos && photos.length > 0 && (
           <Carousel

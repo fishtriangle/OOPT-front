@@ -10,6 +10,7 @@ interface IDescriptionBlockSliceState {
   currentTownId: number;
   currentMasterId: number;
   currentServiceId: number;
+  currentHolidayId: number;
 }
 
 const initialState: IDescriptionBlockSliceState = {
@@ -20,6 +21,7 @@ const initialState: IDescriptionBlockSliceState = {
   currentTownId: 1,
   currentMasterId: 1,
   currentServiceId: 1,
+  currentHolidayId: 1,
 };
 
 export const descriptionBlockSlice = createSlice({
@@ -50,6 +52,9 @@ export const descriptionBlockSlice = createSlice({
     setCurrentServiceId: (state, action) => {
       state.currentServiceId = action.payload;
     },
+    setCurrentHolidayId: (state, action) => {
+      state.currentHolidayId = action.payload;
+    },
   },
 });
 
@@ -67,6 +72,8 @@ export const selectCurrentMasterId = (state: RootState) =>
   state.descriptionBlock.currentMasterId;
 export const selectCurrentServiceId = (state: RootState) =>
   state.descriptionBlock.currentServiceId;
+export const selectCurrentHolidayId = (state: RootState) =>
+  state.descriptionBlock.currentHolidayId;
 
 export const {
   hideBlock,
@@ -77,6 +84,7 @@ export const {
   setCurrentTownId,
   setCurrentMasterId,
   setCurrentServiceId,
+  setCurrentHolidayId,
 } = descriptionBlockSlice.actions;
 
 export default descriptionBlockSlice.reducer;

@@ -12,6 +12,7 @@
   font-size: 32px;
   color: #A7A7A7;
   min-width: 316px;
+  text-align: end;
 }
 
 .text {
@@ -25,4 +26,4 @@
   height: 65%;
 }
 
-/*# sourceMappingURL=Town.module.css.map */
+/*# sourceMappingURL=Point.module.css.map */

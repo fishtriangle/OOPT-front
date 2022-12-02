@@ -12,7 +12,7 @@ import styles from './Masters.module.scss';
 import {
   hideBlock,
   setBlockType,
-  setCurrentPointId,
+  setCurrentMasterId,
   showBlock,
 } from '../../redux/slices/descriptionBlockSlice';
 import { useAppDispatch } from '../../redux/store';
@@ -45,8 +45,8 @@ const Masters: React.FC = () => {
   const handlePointClick = (id: number) => {
     dispatch(hideBlock());
     setTimeout(() => {
-      // dispatch(setCurrentPointId(id));
-      // dispatch(setBlockType(EnumDescriptionBlock.POINT));
+      dispatch(setCurrentMasterId(id));
+      dispatch(setBlockType(EnumDescriptionBlock.MASTER));
       dispatch(showBlock());
     }, 1000);
   };

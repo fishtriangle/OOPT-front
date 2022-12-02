@@ -2,8 +2,8 @@ import React from 'react';
 import { useQuery } from '@apollo/client';
 import {
   EnumDescriptionBlock,
-  IGetPoint,
-  IGetPointVars,
+  IGetMaster,
+  IGetMasterVars,
 } from '../../common/types';
 import Loader from '../Loader/Loader';
 import styles from './Master.module.scss';
@@ -12,23 +12,24 @@ import Carousel from 'nuka-carousel';
 import { useSelector } from 'react-redux';
 import {
   hideBlock,
-  selectCurrentPointId,
+  selectCurrentMasterId,
   setBlockType,
   showBlock,
 } from '../../redux/slices/descriptionBlockSlice';
 import { useAppDispatch } from '../../redux/store';
-import { GET_POINT } from '../../graphql/query/point';
+import { GET_MASTER } from '../../graphql/query/master';
+import { ListGroup } from 'react-bootstrap';
 
 const Master: React.FC = () => {
-  const pointId = useSelector(selectCurrentPointId);
+  const masterId = useSelector(selectCurrentMasterId);
   const dispatch = useAppDispatch();
 
-  const { data, loading, error } = useQuery<IGetPoint, IGetPointVars>(
-    GET_POINT,
+  const { data, loading, error } = useQuery<IGetMaster, IGetMasterVars>(
+    GET_MASTER,
     {
       variables: {
         pollInterval: 3000,
-        pointUniqueInput: { id: pointId },
+        masterUniqueInput: { id: masterId },
       },
     }
   );
@@ -36,7 +37,7 @@ const Master: React.FC = () => {
   const handleBackClick = () => {
     dispatch(hideBlock());
     setTimeout(() => {
-      dispatch(setBlockType(EnumDescriptionBlock.POINTS));
+      dispatch(setBlockType(EnumDescriptionBlock.MASTERS));
       dispatch(showBlock());
     }, 1000);
   };
@@ -46,29 +47,49 @@ const Master: React.FC = () => {
     return (
       <>
         <p className={'text-center'}>
-          Ошибка загрузки информации о Достопримечательности...
+          Ошибка загрузки информации о Мастерах...
         </p>
         <p>{error.message}</p>
       </>
     );
 
-  console.log('4: ', data?.getPoint);
-  const photos = data?.getPoint.photos;
+  console.log('5: ', data?.getMaster);
+  const photos = data?.getMaster.photos;
+  const contacts = data?.getMaster.contacts;
 
   return (
     <div className={'text-black'}>
       <div className={'d-flex flex-nowrap justify-content-between'}>
         <div className={styles.h1}>
-          <p className={styles.h1}>{data?.getPoint.title}</p>
+          <p className={styles.h1}>{data?.getMaster.title}</p>
         </div>
         <p className={styles.back} onClick={handleBackClick}>
-          К списку маршрутов
+          К списку мастеров
         </p>
       </div>
 
       <br />
-      <div className={`${styles.text}`}>
-        <Text>{data?.getPoint.description}</Text>
+      <div
+        className={`${styles.text} ${
+          !photos || photos.length === 0
+            ? styles.text__long
+            : styles.text__short
+        }`}
+      >
+        <Text>{data?.getMaster.description}</Text>
+        <br />
+        {contacts && contacts.length > 0 && (
+          <div>
+            <p className={'fw-bold text-uppercase'}>Контактная информация</p>
+            <ListGroup variant='flush'>
+              {contacts.map((contact) => (
+                <ListGroup.Item key={contact.id}>
+                  {contact.description}
+                </ListGroup.Item>
+              ))}
+            </ListGroup>
+          </div>
+        )}
       </div>
       <div className={'mb-5 mx-3 w-90 align-self-center'}>
         {photos && photos.length > 0 && (

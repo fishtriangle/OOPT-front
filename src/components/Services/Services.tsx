@@ -13,6 +13,7 @@ import {
   hideBlock,
   setBlockType,
   setCurrentPointId,
+  setCurrentServiceId,
   showBlock,
 } from '../../redux/slices/descriptionBlockSlice';
 import { useAppDispatch } from '../../redux/store';
@@ -45,8 +46,8 @@ const Services: React.FC = () => {
   const handlePointClick = (id: number) => {
     dispatch(hideBlock());
     setTimeout(() => {
-      // dispatch(setCurrentPointId(id));
-      // dispatch(setBlockType(EnumDescriptionBlock.POINT));
+      dispatch(setCurrentServiceId(id));
+      dispatch(setBlockType(EnumDescriptionBlock.SERVICE_ITEM));
       dispatch(showBlock());
     }, 1000);
   };

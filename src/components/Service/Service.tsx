@@ -2,8 +2,8 @@ import React from 'react';
 import { useQuery } from '@apollo/client';
 import {
   EnumDescriptionBlock,
-  IGetPoint,
-  IGetPointVars,
+  IGetService,
+  IGetServiceVars,
 } from '../../common/types';
 import Loader from '../Loader/Loader';
 import styles from './Service.module.scss';
@@ -12,23 +12,24 @@ import Carousel from 'nuka-carousel';
 import { useSelector } from 'react-redux';
 import {
   hideBlock,
-  selectCurrentPointId,
+  selectCurrentServiceId,
   setBlockType,
   showBlock,
 } from '../../redux/slices/descriptionBlockSlice';
 import { useAppDispatch } from '../../redux/store';
-import { GET_POINT } from '../../graphql/query/point';
+import { ListGroup } from 'react-bootstrap';
+import { GET_SERVICE } from '../../graphql/query/service';
 
 const Service: React.FC = () => {
-  const pointId = useSelector(selectCurrentPointId);
+  const serviceId = useSelector(selectCurrentServiceId);
   const dispatch = useAppDispatch();
 
-  const { data, loading, error } = useQuery<IGetPoint, IGetPointVars>(
-    GET_POINT,
+  const { data, loading, error } = useQuery<IGetService, IGetServiceVars>(
+    GET_SERVICE,
     {
       variables: {
         pollInterval: 3000,
-        pointUniqueInput: { id: pointId },
+        serviceUniqueInput: { id: serviceId },
       },
     }
   );
@@ -36,7 +37,7 @@ const Service: React.FC = () => {
   const handleBackClick = () => {
     dispatch(hideBlock());
     setTimeout(() => {
-      dispatch(setBlockType(EnumDescriptionBlock.POINTS));
+      dispatch(setBlockType(EnumDescriptionBlock.SERVICE));
       dispatch(showBlock());
     }, 1000);
   };
@@ -46,29 +47,48 @@ const Service: React.FC = () => {
     return (
       <>
         <p className={'text-center'}>
-          Ошибка загрузки информации о Достопримечательности...
+          Ошибка загрузки информации о Компаниях...
         </p>
         <p>{error.message}</p>
       </>
     );
 
-  console.log('4: ', data?.getPoint);
-  const photos = data?.getPoint.photos;
+  const photos = data?.getService.photos;
+  const contacts = data?.getService.contacts;
 
   return (
     <div className={'text-black'}>
       <div className={'d-flex flex-nowrap justify-content-between'}>
         <div className={styles.h1}>
-          <p className={styles.h1}>{data?.getPoint.title}</p>
+          <p className={styles.h1}>{data?.getService.title}</p>
         </div>
         <p className={styles.back} onClick={handleBackClick}>
-          К списку маршрутов
+          К списку компаний
         </p>
       </div>
 
       <br />
-      <div className={`${styles.text}`}>
-        <Text>{data?.getPoint.description}</Text>
+      <div
+        className={`${styles.text} ${
+          !photos || photos.length === 0
+            ? styles.text__long
+            : styles.text__short
+        }`}
+      >
+        <Text>{data?.getService.description}</Text>
+        <br />
+        {contacts && contacts.length > 0 && (
+          <div>
+            <p className={'fw-bold text-uppercase'}>Контактная информация</p>
+            <ListGroup variant='flush'>
+              {contacts.map((contact) => (
+                <ListGroup.Item key={contact.id}>
+                  {contact.description}
+                </ListGroup.Item>
+              ))}
+            </ListGroup>
+          </div>
+        )}
       </div>
       <div className={'mb-5 mx-3 w-90 align-self-center'}>
         {photos && photos.length > 0 && (

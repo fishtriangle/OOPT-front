@@ -52,7 +52,6 @@ const Point: React.FC = () => {
       </>
     );
 
-  console.log('4: ', data?.getPoint);
   const photos = data?.getPoint.photos;
 
   return (
@@ -62,7 +61,7 @@ const Point: React.FC = () => {
           <p className={styles.h1}>{data?.getPoint.title}</p>
         </div>
         <p className={styles.back} onClick={handleBackClick}>
-          К списку маршрутов
+          Назад
         </p>
       </div>
 
