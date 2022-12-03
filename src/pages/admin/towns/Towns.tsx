@@ -45,7 +45,7 @@ const Towns: React.FC = () => {
               towns.length > 10 && 'add-scrollbar h-63'
             }`}
           >
-            <table className={'table text-primary border-primary fs-2'}>
+            <table className={'table text-primary border-primary'}>
               <thead className={'text-white'}>
                 <tr>
                   <th scope={'col'}>#</th>
@@ -64,19 +64,25 @@ const Towns: React.FC = () => {
                     <td className={'d-flex flex-row justify-content-end'}>
                       <Link
                         to={`/admin/oopts/${id}/towns/${town.id}`}
-                        className='btn btn-sm bg-white text-black fw-bold me-3 px-3 fs-5 py-2 my-2'
+                        className='btn btn-sm bg-white text-black fw-bold me-3 px-3 py-2 my-2'
                       >
-                        Описание и фотографии
+                        Описание
+                      </Link>
+                      <Link
+                        to={`/admin/oopts/${id}/towns/${town.id}/photos`}
+                        className='btn btn-sm bg-white text-black fw-bold me-3 px-3 py-2 my-2'
+                      >
+                        Фотографии
                       </Link>
                       <Link
                         to={`/admin/oopts/${id}/towns/${town.id}/points`}
-                        className='btn btn-sm bg-white text-black fw-bold me-3 px-3 fs-5 py-2 my-2'
+                        className='btn btn-sm bg-white text-black fw-bold me-3 px-3 py-2 my-2'
                       >
                         Достопримечательности
                       </Link>
                       <button
                         type='button'
-                        className='btn btn-sm bg-warning text-black fw-bold me-3 px-3 fs-5 py-2 my-2'
+                        className='btn btn-sm bg-warning text-black fw-bold me-3 px-3 py-2 my-2'
                         // onClick={() =>
                         //   handleDeleteEnterpriseClick(enterprise.id)
                         // }

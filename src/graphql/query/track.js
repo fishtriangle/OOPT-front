@@ -7,7 +7,7 @@ export const GET_TRACK = gql`
       title
       description
       length
-      axis {
+      axises {
         id
         title
         axisX
@@ -31,12 +31,53 @@ export const GET_TRACK = gql`
         title
         description
         route
+        axis {
+          id
+          title
+          axisX
+          axisY
+        }
+        photos {
+          id
+          small
+          large
+          description
+          alt
+        }
+        videos {
+          id
+          path
+          description
+          alt
+        }
       }
       type
       transport
       timeInTrack
       season
       water
+    }
+  }
+`;
+
+export const GET_TRACK_PHOTOS = gql`
+  query GetTrack($trackUniqueInput: TrackUniqueInput!) {
+    getTrack(trackUniqueInput: $trackUniqueInput) {
+      id
+      title
+      photos {
+        id
+        small
+        large
+        description
+        alt
+      }
+      videos {
+        id
+        path
+        description
+        alt
+      }
     }
   }
 `;

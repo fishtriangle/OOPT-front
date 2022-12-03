@@ -2,23 +2,33 @@ import AdminLayout from '../../../layouts/AdminLayout';
 import React, { useRef, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import { UPDATE_ENTERPRISE } from '../../../graphql/mutations/enterprise';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import { GET_ONE_ENTERPRISE } from '../../../graphql/query/enterprise';
 import Loader from '../../../components/Loader/Loader';
 import { readFile } from '../../../utilities/filesInteractions';
 import {
-  IGetEnterprise,
-  IGetEnterpriseVars,
   IGetOOPT,
   IGetOOPTVars,
+  IGetPoint,
+  IGetPointVars,
+  IGetTown,
+  IGetTownVars,
+  IGetTrack,
+  IGetTrackVars,
   IPhoto,
+  IPoint,
 } from '../../../common/types';
 import { GET_OOPT_DESCRIPTION } from '../../../graphql/query/oopt';
 import styles from '../../Edit.module.scss';
 import Carousel from 'nuka-carousel';
+import { GET_TOWN } from '../../../graphql/query/town';
+import { GET_POINT } from '../../../graphql/query/point';
+import { GET_TRACK } from '../../../graphql/query/track';
 
-const Oopt = () => {
+const Track = () => {
   const id = Number(useParams().id);
+  const trackId = Number(useParams().trackId);
+  const backLocation = useLocation().pathname.split('/').slice(0, -1).join('/');
 
   // const [updateEnterprise] = useMutation(UPDATE_ENTERPRISE);
 
@@ -32,12 +42,12 @@ const Oopt = () => {
 
   const photoFileItems = useRef<HTMLInputElement>(null);
 
-  const { data, loading, error, refetch } = useQuery<IGetOOPT, IGetOOPTVars>(
-    GET_OOPT_DESCRIPTION,
+  const { data, loading, error, refetch } = useQuery<IGetTrack, IGetTrackVars>(
+    GET_TRACK,
     {
       variables: {
         pollInterval: 3000,
-        ooptUniqueInput: { id },
+        trackUniqueInput: { id: trackId },
       },
     }
   );
@@ -47,7 +57,7 @@ const Oopt = () => {
     return (
       <>
         <p className={'text-center text-black'}>
-          Ошибка загрузки информации о парке...
+          Ошибка загрузки информации о маршрутах...
         </p>
         <p>{error.message}</p>
       </>
@@ -67,7 +77,6 @@ const Oopt = () => {
       | React.FormEvent<HTMLFormElement>
       | React.FormEvent<HTMLTextAreaElement>
   ) => {
-    console.log('1');
     // let logo: string | ArrayBuffer | null = null;
     // event.preventDefault();
     // const file = logoFileItem.current?.files?.[0];
@@ -107,62 +116,135 @@ const Oopt = () => {
     //   .catch((e) => console.error(e));
   };
 
-  const photos: IPhoto[] | undefined = data?.getOOPT.photos;
-
   return (
     <AdminLayout>
       <h3 className={'mb-3 mt-0 fs-1 w-75 align-self-center'}>
-        Редактирование описания парка
+        Редактирование описания маршрутов
       </h3>
       <br />
       <form className={'w-75 align-self-center'} onSubmit={handleFormSubmit}>
         <div className={'form-group row mb-2'}>
-          <label htmlFor={'ooptTitle'} className='col-3 col-form-label'>
-            Название парка:
+          <label htmlFor={'trackTitle'} className='col-3 col-form-label'>
+            Название маршрута:
           </label>
           <div className={'col-9'}>
             <input
-              id={'ooptTitle'}
+              id={'trackTitle'}
               className={'form-control custom-form'}
               placeholder={'Напишите текст здесь...'}
               onChange={(event) => handelInputChange(event, setTitle)}
-              value={title ?? data?.getOOPT.title ?? ''}
+              value={title ?? data?.getTrack.title ?? ''}
             />
           </div>
         </div>
 
         <div className={'form-group row mb-2'}>
-          <label htmlFor={'ooptDescription'} className='col-3 col-form-label'>
-            Описание парка:
+          <label htmlFor={'trackDescription'} className='col-3 col-form-label'>
+            Описание маршрута:
           </label>
           <div className={'col-9'}>
             <textarea
-              id={'ooptDescription'}
-              rows={5}
+              id={'trackDescription'}
+              rows={8}
               placeholder={'Напишите текст здесь...'}
               className={'form-control custom-form add-scrollbar'}
               onChange={(event) => handelInputChange(event, setDescription)}
-              value={description ?? data?.getOOPT.description ?? ''}
+              value={description ?? data?.getTrack.description ?? ''}
             />
           </div>
         </div>
 
-        <div className={'form-group row mb-4'}>
-          <label htmlFor='photoFiles' className='col-3 col-form-label'>
-            Фотографии:
+        <div className={'form-group row mb-2'}>
+          <label htmlFor={'trackType'} className='col-3 col-form-label'>
+            Тип маршрута:
           </label>
-          <div className={'col-4'}>
+          <div className={'col-3'}>
             <input
-              className='form-control custom-form'
-              type='file'
-              ref={photoFileItems}
-              multiple={true}
+              id={'trackType'}
+              className={'form-control custom-form'}
+              placeholder={'Напишите текст здесь...'}
+              onChange={(event) => handelInputChange(event, setTitle)}
+              value={title ?? data?.getTrack.type ?? ''}
             />
           </div>
-          <div className={'col-4 ms-3 mt-1'}>
-            jpg или png, не менее 1920*1080px
+          <label
+            htmlFor={'trackLength'}
+            className='col-3 col-form-label text-center'
+          >
+            Длина маршрута:
+          </label>
+          <div className={'col-3'}>
+            <input
+              id={'trackLength'}
+              className={'form-control custom-form'}
+              placeholder={'Напишите текст здесь...'}
+              onChange={(event) => handelInputChange(event, setTitle)}
+              value={title ?? data?.getTrack.length ?? ''}
+            />
           </div>
         </div>
+
+        <div className={'form-group row mb-2'}>
+          <label htmlFor={'trackTransport'} className='col-3 col-form-label'>
+            Тип передвижения:
+          </label>
+          <div className={'col-3'}>
+            <input
+              id={'trackTransport'}
+              className={'form-control custom-form'}
+              placeholder={'Напишите текст здесь...'}
+              onChange={(event) => handelInputChange(event, setTitle)}
+              value={title ?? data?.getTrack.transport ?? ''}
+            />
+          </div>
+          <label
+            htmlFor={'trackTimeInTrack'}
+            className='col-3 col-form-label text-center'
+          >
+            Продолжительность:
+          </label>
+          <div className={'col-3'}>
+            <input
+              id={'trackTimeInTrack'}
+              className={'form-control custom-form'}
+              placeholder={'Напишите текст здесь...'}
+              onChange={(event) => handelInputChange(event, setTitle)}
+              value={title ?? data?.getTrack.timeInTrack ?? ''}
+            />
+          </div>
+        </div>
+
+        <div className={'form-group row mb-2'}>
+          <label htmlFor={'trackSeason'} className='col-3 col-form-label'>
+            Сезон:
+          </label>
+          <div className={'col-3'}>
+            <input
+              id={'trackSeason'}
+              className={'form-control custom-form'}
+              placeholder={'Напишите текст здесь...'}
+              onChange={(event) => handelInputChange(event, setTitle)}
+              value={title ?? data?.getTrack.season ?? ''}
+            />
+          </div>
+          <label
+            htmlFor={'trackWater'}
+            className='col-3 col-form-label text-center'
+          >
+            Источники воды:
+          </label>
+          <div className={'col-3'}>
+            <input
+              id={'trackWater'}
+              className={'form-control custom-form'}
+              placeholder={'Напишите текст здесь...'}
+              onChange={(event) => handelInputChange(event, setTitle)}
+              value={title ?? data?.getTrack.water ?? ''}
+            />
+          </div>
+        </div>
+
+        <br />
         <div className={'mb-2 d-flex justify-content-center'}>
           <button
             type={'submit'}
@@ -171,91 +253,15 @@ const Oopt = () => {
             Опубликовать
           </button>
           <Link
-            to={'/admin'}
+            to={backLocation}
             className={'btn btn-lg btn-outline-warning text-warning px-4'}
           >
             Отмена
           </Link>
         </div>
       </form>
-      {photos && photos.length > 0 && (
-        <form className={'w-75 mt-3'}>
-          <fieldset className={'form-group row'}>
-            <legend>Удаление фотографий</legend>
-            <div
-              className={`col-9 my-0 mx-0 align-self-center ${styles.editPage_carouselContainer}`}
-            >
-              {photos && photos.length > 6 ? (
-                <Carousel
-                  className={`mt-2`}
-                  renderCenterLeftControls={null}
-                  renderCenterRightControls={null}
-                  wrapAround={true}
-                  slidesToShow={photos.length < 6 ? photos.length : 6}
-                  defaultControlsConfig={{
-                    pagingDotsClassName: styles.editPage_carouselDots,
-                    pagingDotsContainerClassName:
-                      styles.editPage_carouselDotsContainer,
-                  }}
-                >
-                  {photos.map(
-                    ({
-                      id,
-                      small,
-                      alt,
-                    }: {
-                      id: number;
-                      small?: string;
-                      alt?: string;
-                    }) => (
-                      <img
-                        src={small}
-                        alt={alt}
-                        key={id}
-                        width={'200px'}
-                        // onClick={(event) => handleChoosePhoto(event, id)}
-                        className={'btn border-0 shadow-none'}
-                      />
-                    )
-                  )}
-                </Carousel>
-              ) : (
-                photos.map(
-                  ({
-                    id,
-                    small,
-                    alt,
-                  }: {
-                    id: number;
-                    small?: string;
-                    alt?: string;
-                  }) => (
-                    <img
-                      src={small}
-                      alt={alt}
-                      key={id}
-                      width={'200px'}
-                      // onClick={(event) => handleChoosePhoto(event, id)}
-                      className={'btn border-0 shadow-none'}
-                    />
-                  )
-                )
-              )}
-            </div>
-            <div className='col-3'>
-              <button
-                type='button'
-                className='btn btn-sm bg-warning px-5 text-black fw-bold mt-4 ms-5'
-                // onClick={handleDeletePhotos}
-              >
-                Удалить
-              </button>
-            </div>
-          </fieldset>
-        </form>
-      )}
     </AdminLayout>
   );
 };
 
-export default Oopt;
+export default Track;

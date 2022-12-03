@@ -51,8 +51,8 @@ export interface IMaster {
 export interface IAxis {
   id: number;
   title?: string;
-  axisX: number;
-  axisY: number;
+  axisX?: number;
+  axisY?: number;
 }
 
 export interface IPoint {

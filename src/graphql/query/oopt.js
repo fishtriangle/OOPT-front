@@ -229,3 +229,25 @@ export const GET_OOPT_HOLIDAYS = gql`
     }
   }
 `;
+
+export const GET_OOPT_PHOTOS = gql`
+  query GetAllOOPTs($ooptUniqueInput: OoptUniqueInput!) {
+    getOOPT(ooptUniqueInput: $ooptUniqueInput) {
+      id
+      title
+      photos {
+        id
+        small
+        large
+        description
+        alt
+      }
+      videos {
+        id
+        path
+        description
+        alt
+      }
+    }
+  }
+`;

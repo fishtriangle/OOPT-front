@@ -25,6 +25,34 @@ export const GET_TOWN = gql`
         description
         alt
       }
+      axis {
+        id
+        title
+        axisX
+        axisY
+      }
+    }
+  }
+`;
+
+export const GET_TOWN_PHOTOS = gql`
+  query GetTown($townUniqueInput: TownUniqueInput!) {
+    getTown(townUniqueInput: $townUniqueInput) {
+      id
+      title
+      photos {
+        id
+        small
+        large
+        description
+        alt
+      }
+      videos {
+        id
+        path
+        description
+        alt
+      }
     }
   }
 `;

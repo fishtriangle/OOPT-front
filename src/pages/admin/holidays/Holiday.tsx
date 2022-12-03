@@ -9,6 +9,8 @@ import { readFile } from '../../../utilities/filesInteractions';
 import {
   IGetEnterprise,
   IGetEnterpriseVars,
+  IGetHoliday,
+  IGetHolidayVars,
   IGetOOPT,
   IGetOOPTVars,
   IPhoto,
@@ -16,9 +18,11 @@ import {
 import { GET_OOPT_DESCRIPTION } from '../../../graphql/query/oopt';
 import styles from '../../Edit.module.scss';
 import Carousel from 'nuka-carousel';
+import { GET_HOLIDAY } from '../../../graphql/query/holiday';
 
-const Oopt = () => {
+const Holiday = () => {
   const id = Number(useParams().id);
+  const holidayId = Number(useParams().holidayId);
 
   // const [updateEnterprise] = useMutation(UPDATE_ENTERPRISE);
 
@@ -32,22 +36,22 @@ const Oopt = () => {
 
   const photoFileItems = useRef<HTMLInputElement>(null);
 
-  const { data, loading, error, refetch } = useQuery<IGetOOPT, IGetOOPTVars>(
-    GET_OOPT_DESCRIPTION,
-    {
-      variables: {
-        pollInterval: 3000,
-        ooptUniqueInput: { id },
-      },
-    }
-  );
+  const { data, loading, error, refetch } = useQuery<
+    IGetHoliday,
+    IGetHolidayVars
+  >(GET_HOLIDAY, {
+    variables: {
+      pollInterval: 3000,
+      holidayUniqueInput: { id: holidayId },
+    },
+  });
 
   if (loading) return <Loader />;
   if (error)
     return (
       <>
         <p className={'text-center text-black'}>
-          Ошибка загрузки информации о парке...
+          Ошибка загрузки информации о празднике...
         </p>
         <p>{error.message}</p>
       </>
@@ -107,42 +111,45 @@ const Oopt = () => {
     //   .catch((e) => console.error(e));
   };
 
-  const photos: IPhoto[] | undefined = data?.getOOPT.photos;
+  const photos: IPhoto[] | undefined = data?.getHoliday.photos;
 
   return (
     <AdminLayout>
       <h3 className={'mb-3 mt-0 fs-1 w-75 align-self-center'}>
-        Редактирование описания парка
+        Редактирование описания празника
       </h3>
       <br />
       <form className={'w-75 align-self-center'} onSubmit={handleFormSubmit}>
         <div className={'form-group row mb-2'}>
-          <label htmlFor={'ooptTitle'} className='col-3 col-form-label'>
-            Название парка:
+          <label htmlFor={'holidayTitle'} className='col-3 col-form-label'>
+            Название праздника:
           </label>
           <div className={'col-9'}>
             <input
-              id={'ooptTitle'}
+              id={'holidayTitle'}
               className={'form-control custom-form'}
               placeholder={'Напишите текст здесь...'}
               onChange={(event) => handelInputChange(event, setTitle)}
-              value={title ?? data?.getOOPT.title ?? ''}
+              value={title ?? data?.getHoliday.title ?? ''}
             />
           </div>
         </div>
 
         <div className={'form-group row mb-2'}>
-          <label htmlFor={'ooptDescription'} className='col-3 col-form-label'>
-            Описание парка:
+          <label
+            htmlFor={'holidayDescription'}
+            className='col-3 col-form-label'
+          >
+            Описание праздника:
           </label>
           <div className={'col-9'}>
             <textarea
-              id={'ooptDescription'}
+              id={'holidayDescription'}
               rows={5}
               placeholder={'Напишите текст здесь...'}
               className={'form-control custom-form add-scrollbar'}
               onChange={(event) => handelInputChange(event, setDescription)}
-              value={description ?? data?.getOOPT.description ?? ''}
+              value={description ?? data?.getHoliday.description ?? ''}
             />
           </div>
         </div>
@@ -171,7 +178,7 @@ const Oopt = () => {
             Опубликовать
           </button>
           <Link
-            to={'/admin'}
+            to={`/admin/oopts/${id}/holidays`}
             className={'btn btn-lg btn-outline-warning text-warning px-4'}
           >
             Отмена
@@ -258,4 +265,4 @@ const Oopt = () => {
   );
 };
 
-export default Oopt;
+export default Holiday;

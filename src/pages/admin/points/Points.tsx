@@ -6,18 +6,24 @@ import {
   IGetOOPTVars,
   IGetTown,
   IGetTownVars,
+  IGetTrack,
+  IGetTrackVars,
   IPoint,
 } from '../../../common/types';
 import Loader from '../../../components/Loader/Loader';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import AdminLayout from '../../../layouts/AdminLayout';
 import { GET_TOWN } from '../../../graphql/query/town';
 import { GET_OOPT_POINTS } from '../../../graphql/query/oopt';
+import { GET_TRACK } from '../../../graphql/query/track';
 
 const Points: React.FC = () => {
   const navigate = useNavigate();
   const ooptId = Number(useParams().id);
   const townId = Number(useParams().townId);
+  const trackId = Number(useParams().trackId);
+
+  const backLocation = useLocation().pathname.split('/').slice(0, -2).join('/');
 
   let loadedData: IPoint[] | undefined;
 
@@ -44,6 +50,29 @@ const Points: React.FC = () => {
       );
 
     loadedData = data?.getTown.points;
+  } else if (trackId) {
+    const { data, loading, error } = useQuery<IGetTrack, IGetTrackVars>(
+      GET_TRACK,
+      {
+        variables: {
+          pollInterval: 3000,
+          trackUniqueInput: { id: trackId },
+        },
+      }
+    );
+
+    if (loading) return <Loader />;
+    if (error)
+      return (
+        <>
+          <p className={'text-center'}>
+            Ошибка загрузки информации об остановках...
+          </p>
+          <p>{error.message}</p>
+        </>
+      );
+
+    loadedData = data?.getTrack.stops;
   } else {
     const { data, loading, error } = useQuery<IGetOOPT, IGetOOPTVars>(
       GET_OOPT_POINTS,
@@ -77,7 +106,7 @@ const Points: React.FC = () => {
           </h2>
           <button
             type='button'
-            className='btn w-fit bg-warning text-black fw-bold me-3 px-5 fs-5 py-2 mb-5'
+            className='btn w-fit bg-warning text-black fw-bold me-3 px-5 py-2 mb-5'
             onClick={() => navigate(`/admin/oopts/${ooptId}/towns`)}
           >
             Добавить достопримечательность
@@ -87,10 +116,10 @@ const Points: React.FC = () => {
         {loadedData && loadedData.length > 0 && (
           <div
             /*className={`${styles.editPage_tableContainer}`}*/ className={`${
-              loadedData.length > 10 && 'add-scrollbar'
+              loadedData.length > 6 && 'add-scrollbar admin-list-h'
             }`}
           >
-            <table className={'table text-primary border-primary fs-2'}>
+            <table className={'table text-primary border-primary'}>
               <thead className={'text-white'}>
                 <tr>
                   <th scope={'col'}>#</th>
@@ -108,14 +137,32 @@ const Points: React.FC = () => {
                     <td className={'align-baseline'}>{item.title}</td>
                     <td className={'d-flex flex-row justify-content-end'}>
                       <Link
-                        to={`/admin/oopt/${ooptId}/towns/${item.id}`}
-                        className='btn btn-sm bg-white text-black fw-bold me-3 px-3 fs-5 py-2 my-2'
+                        to={`/admin/oopts/${ooptId}/${
+                          townId
+                            ? `towns/${townId}/points/${item.id}`
+                            : trackId
+                            ? `tracks/${trackId}/stops/${item.id}`
+                            : `points/${item.id}`
+                        }`}
+                        className='btn btn-sm bg-white text-black fw-bold me-3 px-3 py-2 my-2'
                       >
-                        Описание и фотографии
+                        Описание
+                      </Link>
+                      <Link
+                        to={`/admin/oopts/${ooptId}/${
+                          townId
+                            ? `towns/${townId}/points/${item.id}/photos`
+                            : trackId
+                            ? `tracks/${trackId}/stops/${item.id}/photos`
+                            : `points/${item.id}/photos`
+                        }`}
+                        className='btn btn-sm bg-white text-black fw-bold me-3 px-3 py-2 my-2'
+                      >
+                        Фотографии
                       </Link>
                       <button
                         type='button'
-                        className='btn btn-sm bg-warning text-black fw-bold me-3 px-3 fs-5 py-2 my-2'
+                        className='btn btn-sm bg-warning text-black fw-bold me-3 px-3 py-2 my-2'
                         // onClick={() =>
                         //   handleDeleteEnterpriseClick(enterprise.id)
                         // }
@@ -133,9 +180,7 @@ const Points: React.FC = () => {
         <button
           type='button'
           className='btn align-self-center w-fit bg-warning text-black fw-bold me-3 px-6 fs-3 py-2 '
-          onClick={() =>
-            navigate(`/admin${townId ? `/oopts/${ooptId}/towns` : ''}`)
-          }
+          onClick={() => navigate(backLocation)}
         >
           Назад
         </button>

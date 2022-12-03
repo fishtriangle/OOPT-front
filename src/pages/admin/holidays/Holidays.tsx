@@ -42,7 +42,7 @@ const Holidays: React.FC = () => {
           </h2>
           <button
             type='button'
-            className='btn w-fit bg-warning text-black fw-bold me-3 px-5 fs-5 py-2 mb-5'
+            className='btn w-fit bg-warning text-black fw-bold me-3 px-5 py-2 mb-5'
             onClick={() => navigate(`/admin/oopts/${ooptId}/towns`)}
           >
             Добавить праздник
@@ -52,10 +52,10 @@ const Holidays: React.FC = () => {
         {loadedData && loadedData.length > 0 && (
           <div
             /*className={`${styles.editPage_tableContainer}`}*/ className={`${
-              loadedData.length > 10 && 'add-scrollbar h-63'
+              loadedData.length > 10 && 'add-scrollbar admin-list-h'
             }`}
           >
-            <table className={'table text-primary border-primary fs-2'}>
+            <table className={'table text-primary border-primary'}>
               <thead className={'text-white'}>
                 <tr>
                   <th scope={'col'}>#</th>
@@ -73,14 +73,14 @@ const Holidays: React.FC = () => {
                     <td className={'align-baseline'}>{item.title}</td>
                     <td className={'d-flex flex-row justify-content-end'}>
                       <Link
-                        to={`/admin/oopt/${ooptId}/towns/${item.id}`}
-                        className='btn btn-sm bg-white text-black fw-bold me-3 px-3 fs-5 py-2 my-2'
+                        to={`/admin/oopts/${ooptId}/holidays/${item.id}`}
+                        className='btn btn-sm bg-white text-black fw-bold me-3 px-3 py-2 my-2'
                       >
                         Описание и фотографии
                       </Link>
                       <button
                         type='button'
-                        className='btn btn-sm bg-warning text-black fw-bold me-3 px-3 fs-5 py-2 my-2'
+                        className='btn btn-sm bg-warning text-black fw-bold me-3 px-3 py-2 my-2'
                         // onClick={() =>
                         //   handleDeleteEnterpriseClick(enterprise.id)
                         // }

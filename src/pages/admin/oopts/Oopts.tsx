@@ -31,7 +31,7 @@ const Oopts: React.FC = () => {
         <h2 className={'text-uppercase mb-5 text-white'}>Список парков:</h2>
         {oopts && oopts.length > 0 && (
           <div /*className={`${styles.editPage_tableContainer}`}*/>
-            <table className={'table text-primary border-primary fs-2'}>
+            <table className={'table text-primary border-primary'}>
               <thead className={'text-white'}>
                 <tr>
                   <th scope={'col'}>#</th>
@@ -50,43 +50,43 @@ const Oopts: React.FC = () => {
                     <td className={'d-flex flex-row justify-content-end'}>
                       <Link
                         to={`/admin/oopts/${oopt.id}`}
-                        className='btn btn-sm bg-white text-black fw-bold me-3 px-3 fs-5 py-2 my-2'
+                        className='btn btn-sm bg-white text-black fw-bold me-3 px-2 py-2 my-2'
                       >
                         Описание и фотографии
                       </Link>
                       <Link
                         to={`/admin/oopts/${oopt.id}/towns`}
-                        className='btn btn-sm bg-white text-black fw-bold me-3 px-3 fs-5 py-2 my-2'
+                        className='btn btn-sm bg-white text-black fw-bold me-3 px-2 py-2 my-2'
                       >
                         Населенные пункты
                       </Link>
                       <Link
                         to={`/admin/oopts/${oopt.id}/points`}
-                        className='btn btn-sm bg-white text-black fw-bold me-3 px-3 fs-5 py-2 my-2'
+                        className='btn btn-sm bg-white text-black fw-bold me-3 px-2 py-2 my-2'
                       >
                         Достопримечательности
                       </Link>
                       <Link
                         to={`/admin/oopts/${oopt.id}/tracks`}
-                        className='btn btn-sm bg-white text-black fw-bold me-3 px-3 fs-5 py-2 my-2'
+                        className='btn btn-sm bg-white text-black fw-bold me-3 px-2 py-2 my-2'
                       >
                         Маршруты
                       </Link>
                       <Link
                         to={`/admin/oopts/${oopt.id}/masters`}
-                        className='btn btn-sm bg-white text-black fw-bold me-3 px-3 fs-5 py-2 my-2'
+                        className='btn btn-sm bg-white text-black fw-bold me-3 px-2 py-2 my-2'
                       >
                         Мастера
                       </Link>
                       <Link
                         to={`/admin/oopts/${oopt.id}/services`}
-                        className='btn btn-sm bg-white text-black fw-bold me-3 px-3 fs-5 py-2 my-2'
+                        className='btn btn-sm bg-white text-black fw-bold me-3 px-2 py-2 my-2'
                       >
                         Компании
                       </Link>
                       <Link
                         to={`/admin/oopts/${oopt.id}/holidays`}
-                        className='btn btn-sm bg-white text-black fw-bold me-3 px-3 fs-5 py-2 my-2'
+                        className='btn btn-sm bg-white text-black fw-bold me-3 px-2 py-2 my-2'
                       >
                         Праздники
                       </Link>
