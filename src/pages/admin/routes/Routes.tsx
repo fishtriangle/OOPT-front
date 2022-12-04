@@ -1,46 +1,27 @@
 import AdminLayout from '../../../layouts/AdminLayout';
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
-import { UPDATE_ENTERPRISE } from '../../../graphql/mutations/enterprise';
 import { Link, useLocation, useParams } from 'react-router-dom';
-import { GET_ONE_ENTERPRISE } from '../../../graphql/query/enterprise';
 import Loader from '../../../components/Loader/Loader';
-import { readFile } from '../../../utilities/filesInteractions';
-import {
-  IGetOOPT,
-  IGetOOPTVars,
-  IGetPoint,
-  IGetPointVars,
-  IGetTown,
-  IGetTownVars,
-  IGetTrack,
-  IGetTrackVars,
-  IPhoto,
-  IPoint,
-} from '../../../common/types';
-import { GET_OOPT_DESCRIPTION } from '../../../graphql/query/oopt';
-import styles from '../../Edit.module.scss';
-import Carousel from 'nuka-carousel';
-import { GET_TOWN } from '../../../graphql/query/town';
-import { GET_POINT } from '../../../graphql/query/point';
+import { IGetTrack, IGetTrackVars } from '../../../common/types';
 import { GET_TRACK } from '../../../graphql/query/track';
+import { UPDATE_AXIS } from '../../../graphql/mutations/axis';
+import { Alert } from 'react-bootstrap';
 
 const Routes = () => {
   const id = Number(useParams().id);
   const trackId = Number(useParams().trackId);
   const backLocation = useLocation().pathname.split('/').slice(0, -2).join('/');
 
-  // const [updateEnterprise] = useMutation(UPDATE_ENTERPRISE);
+  const [updateAxis] = useMutation(UPDATE_AXIS);
 
-  const [title, setTitle] = useState<string | null>(null);
-  const [description, setDescription] = useState<string | null>(null);
-  const [contacts, setContacts] = useState<string | null>(null);
-  const [markerValue, setMarkerValue] = useState<string | null>(null);
-  const [markerTop, setMarkerTop] = useState<string | null>(null);
-  const [markerLeft, setMarkerLeft] = useState<string | null>(null);
-  const [markerCorner, setMarkerCorner] = useState<string | null>(null);
-
-  const photoFileItems = useRef<HTMLInputElement>(null);
+  const [title, setTitle] = useState<string[]>([]);
+  const [markersY, setMarkersY] = useState<string[]>([]);
+  const [markersX, setMarkersX] = useState<string[]>([]);
+  const [alertSuccess, setAlertSuccess] = useState<string | null>(null);
+  const [alertDanger, setAlertDanger] = useState<string | null>(null);
+  const [invalidX, setInvalidX] = useState<boolean[]>([]);
+  const [invalidY, setInvalidY] = useState<boolean[]>([]);
 
   const { data, loading, error, refetch } = useQuery<IGetTrack, IGetTrackVars>(
     GET_TRACK,
@@ -63,13 +44,25 @@ const Routes = () => {
       </>
     );
 
+  // let x: string[] = [];
+  // let y: string[] = [];
+  //
+  // if (data?.getTrack.axises) {
+  //   x = data?.getTrack.axises.map(({ axisX }) => `${axisX}`);
+  //   y = data?.getTrack.axises.map(({ axisY }) => `${axisY}`);
+  // }
+
   const handelInputChange = (
     event:
       | React.ChangeEvent<HTMLInputElement>
       | React.ChangeEvent<HTMLTextAreaElement>,
-    handler: React.Dispatch<React.SetStateAction<string | null>>
+    handler: React.Dispatch<React.SetStateAction<string[]>>,
+    index: number,
+    array: string[]
   ) => {
-    handler(event.target.value);
+    const input = [...array];
+    input[index] = event.target.value;
+    handler(input);
   };
 
   const handleFormSubmit = async (
@@ -77,47 +70,65 @@ const Routes = () => {
       | React.FormEvent<HTMLFormElement>
       | React.FormEvent<HTMLTextAreaElement>
   ) => {
-    // let logo: string | ArrayBuffer | null = null;
-    // event.preventDefault();
-    // const file = logoFileItem.current?.files?.[0];
-    //
-    // if (file) {
-    //   logo = await readFile(file);
-    // }
-    //
-    // const modifiedDescription = description
-    //   ? description.split('\n').join('&n')
-    //   : undefined;
-    //
-    // const input = {
-    //   id,
-    //   title: title || undefined,
-    //   logo: logo || undefined,
-    //   description: modifiedDescription,
-    //   contacts: contacts || undefined,
-    //   marker:
-    //     markerValue || markerTop || markerLeft || markerCorner
-    //       ? {
-    //           value: markerValue || undefined,
-    //           top: Number(markerTop) || undefined,
-    //           left: Number(markerLeft) || undefined,
-    //           corner: markerCorner || undefined,
-    //         }
-    //       : undefined,
-    // };
-    //
-    // updateEnterprise({
-    //   variables: { input },
-    // })
-    //   .then(({ data }) => {
-    //     refetch().catch((e) => console.error(e));
-    //     alert(JSON.stringify(data.updateEnterprise.content));
-    //   })
-    //   .catch((e) => console.error(e));
+    event.preventDefault();
+    setAlertSuccess(null);
+    setAlertDanger(null);
+    let validationErrors = false;
+    setInvalidY([]);
+    setInvalidX([]);
+
+    markersY.forEach((markerY, index) => {
+      if (!Number(markerY)) {
+        setInvalidY((isInvalid) => [...isInvalid, true]);
+        validationErrors = true;
+      } else {
+        setInvalidY((isInvalid) => [...isInvalid, false]);
+      }
+    });
+
+    markersX.forEach((markerX, index) => {
+      if (!Number(markerX)) {
+        setInvalidX((isInvalid) => [...isInvalid, true]);
+        validationErrors = true;
+      } else {
+        setInvalidX((isInvalid) => [...isInvalid, false]);
+      }
+    });
+
+    if (validationErrors) {
+      setAlertDanger('Координаты должны быть числом');
+      return;
+    }
+
+    const axisesData = data?.getTrack.axises.map((axis, index) => ({
+      id: axis.id,
+      title: title[index] || undefined,
+      axisX: Number(markersX[index]) || undefined,
+      axisY: Number(markersY[index]) || undefined,
+    }));
+
+    if (axisesData) {
+      const promises: Promise<any>[] = axisesData.map((data) =>
+        updateAxis({ variables: { data } })
+      );
+
+      Promise.all(promises)
+        .then(() => {
+          refetch().catch((e) => console.error(e));
+          setAlertSuccess('Изменения успешно внесены');
+        })
+        .catch((e) => {
+          setAlertDanger(JSON.stringify(e.message));
+          console.error(e);
+        });
+    }
   };
 
   return (
     <AdminLayout>
+      {alertSuccess && <Alert variant={'success'}>{alertSuccess}</Alert>}
+      {alertDanger && <Alert variant={'danger'}>{alertDanger}</Alert>}
+
       <div className={'d-flex flex-row flex-nowrap justify-content-between'}>
         <h3 className={'mb-3 mt-0 fs-1 w-75 align-self-center'}>
           Редактирование точек маршрута {data?.getTrack.title}
@@ -157,8 +168,10 @@ const Routes = () => {
                   id={`axisTitle${axis.id}`}
                   className={'form-control custom-form'}
                   placeholder={'Напишите текст здесь...'}
-                  onChange={(event) => handelInputChange(event, setTitle)}
-                  value={title ?? axis.title ?? ''}
+                  onChange={(event) =>
+                    handelInputChange(event, setTitle, index, title)
+                  }
+                  value={title[index] ?? axis.title ?? ''}
                 />
               </div>
               <label
@@ -170,10 +183,14 @@ const Routes = () => {
               <div className={'col-1'}>
                 <input
                   id={`trackX${axis.id}`}
-                  className={'form-control custom-form'}
+                  className={`form-control custom-form ${
+                    invalidX[index] && 'is-invalid'
+                  }`}
                   placeholder={'Напишите текст здесь...'}
-                  onChange={(event) => handelInputChange(event, setTitle)}
-                  value={title ?? axis.axisX ?? ''}
+                  onChange={(event) =>
+                    handelInputChange(event, setMarkersX, index, markersX)
+                  }
+                  value={markersX[index] ?? axis.axisX ?? ''}
                 />
               </div>
               <label
@@ -185,10 +202,14 @@ const Routes = () => {
               <div className={'col-1'}>
                 <input
                   id={`trackY${axis.id}`}
-                  className={'form-control custom-form'}
+                  className={`form-control custom-form ${
+                    invalidY[index] && 'is-invalid'
+                  }`}
                   placeholder={'Напишите текст здесь...'}
-                  onChange={(event) => handelInputChange(event, setTitle)}
-                  value={title ?? axis.axisY ?? ''}
+                  onChange={(event) =>
+                    handelInputChange(event, setMarkersY, index, markersY)
+                  }
+                  value={markersY[index] ?? axis.axisY ?? ''}
                 />
               </div>
             </div>

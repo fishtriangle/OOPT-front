@@ -187,7 +187,7 @@ const Photos = () => {
       {
         variables: {
           pollInterval: 3000,
-          ooptUniqueInput: { id: townId },
+          ooptUniqueInput: { id },
         },
       }
     );

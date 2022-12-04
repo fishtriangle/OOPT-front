@@ -23,22 +23,24 @@ import Carousel from 'nuka-carousel';
 import { GET_TOWN } from '../../../graphql/query/town';
 import { GET_MASTER } from '../../../graphql/query/master';
 import { GET_SERVICE } from '../../../graphql/query/service';
+import { UPDATE_MASTER } from '../../../graphql/mutations/masters';
+import { UPDATE_CONTACT } from '../../../graphql/mutations/contact';
+import { UPDATE_SERVICE } from '../../../graphql/mutations/service';
+import { Alert } from 'react-bootstrap';
 
 const Service = () => {
   const id = Number(useParams().id);
   const serviceId = Number(useParams().serviceId);
 
-  // const [updateEnterprise] = useMutation(UPDATE_ENTERPRISE);
+  const [updateService] = useMutation(UPDATE_SERVICE);
+  const [updateContact] = useMutation(UPDATE_CONTACT);
 
   const [title, setTitle] = useState<string | null>(null);
   const [description, setDescription] = useState<string | null>(null);
-  const [contacts, setContacts] = useState<string | null>(null);
-  const [markerValue, setMarkerValue] = useState<string | null>(null);
-  const [markerTop, setMarkerTop] = useState<string | null>(null);
-  const [markerLeft, setMarkerLeft] = useState<string | null>(null);
-  const [markerCorner, setMarkerCorner] = useState<string | null>(null);
-
-  const photoFileItems = useRef<HTMLInputElement>(null);
+  const [newContact, setNewContact] = useState<string | null>(null);
+  const [contacts, setContacts] = useState<string[]>([]);
+  const [alertSuccess, setAlertSuccess] = useState<string | null>(null);
+  const [alertDanger, setAlertDanger] = useState<string | null>(null);
 
   const { data, loading, error, refetch } = useQuery<
     IGetService,
@@ -70,53 +72,69 @@ const Service = () => {
     handler(event.target.value);
   };
 
+  const handleInputChangeInArray = (
+    event:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLTextAreaElement>,
+    handler: React.Dispatch<React.SetStateAction<string[]>>,
+    index: number,
+    array: string[]
+  ) => {
+    const input = [...array];
+    input[index] = event.target.value;
+    handler(input);
+  };
+
   const handleFormSubmit = async (
     event:
       | React.FormEvent<HTMLFormElement>
       | React.FormEvent<HTMLTextAreaElement>
   ) => {
-    console.log('1');
-    // let logo: string | ArrayBuffer | null = null;
-    // event.preventDefault();
-    // const file = logoFileItem.current?.files?.[0];
-    //
-    // if (file) {
-    //   logo = await readFile(file);
-    // }
-    //
-    // const modifiedDescription = description
-    //   ? description.split('\n').join('&n')
-    //   : undefined;
-    //
-    // const input = {
-    //   id,
-    //   title: title || undefined,
-    //   logo: logo || undefined,
-    //   description: modifiedDescription,
-    //   contacts: contacts || undefined,
-    //   marker:
-    //     markerValue || markerTop || markerLeft || markerCorner
-    //       ? {
-    //           value: markerValue || undefined,
-    //           top: Number(markerTop) || undefined,
-    //           left: Number(markerLeft) || undefined,
-    //           corner: markerCorner || undefined,
-    //         }
-    //       : undefined,
-    // };
-    //
-    // updateEnterprise({
-    //   variables: { input },
-    // })
-    //   .then(({ data }) => {
-    //     refetch().catch((e) => console.error(e));
-    //     alert(JSON.stringify(data.updateEnterprise.content));
-    //   })
-    //   .catch((e) => console.error(e));
+    event.preventDefault();
+    setAlertSuccess(null);
+    setAlertDanger(null);
+
+    const serviceData = {
+      id: serviceId,
+      title: title || undefined,
+      description: description || undefined,
+    };
+
+    const contactsData = data?.getService.contacts.map((contact, index) => ({
+      id: contact.id,
+      description: contacts[index] || undefined,
+    }));
+
+    updateService({
+      variables: {
+        data: serviceData,
+      },
+    })
+      .then(() => {
+        if (contactsData && contactsData.length > 0) {
+          const promises: Promise<any>[] = contactsData.map((data) =>
+            updateContact({ variables: { data } })
+          );
+          Promise.all(promises);
+        }
+      })
+      .then(() => {
+        refetch().catch((e) => console.error(e));
+        setAlertSuccess('Изменения успешно внесены');
+        setAlertDanger(null);
+      })
+      .catch((e) => {
+        setAlertSuccess(null);
+        setAlertDanger(JSON.stringify(e.message));
+        console.error(e);
+      });
   };
 
   return (
     <AdminLayout>
+      {alertSuccess && <Alert variant={'success'}>{alertSuccess}</Alert>}
+      {alertDanger && <Alert variant={'danger'}>{alertDanger}</Alert>}
+
       <h3 className={'mb-3 mt-0 fs-1 w-75 align-self-center'}>
         Редактирование информации о компании
       </h3>
@@ -158,14 +176,21 @@ const Service = () => {
         Контактная информация:
         <div className={'form-group row my-2'}>
           {data?.getService.contacts &&
-            data?.getService.contacts.map((contact) => (
+            data?.getService.contacts.map((contact, index) => (
               <div className={'col-6 d-flex'} key={contact.id}>
                 <input
                   id={`contactDescription${contact.id}`}
                   className={'form-control custom-form w-70 me-2'}
                   placeholder={'Напишите текст здесь...'}
-                  onChange={(event) => handelInputChange(event, setTitle)}
-                  value={title ?? contact.description ?? ''}
+                  onChange={(event) =>
+                    handleInputChangeInArray(
+                      event,
+                      setContacts,
+                      index,
+                      contacts
+                    )
+                  }
+                  value={contacts[index] ?? contact.description ?? ''}
                 />
                 <button
                   type={'submit'}
@@ -185,15 +210,16 @@ const Service = () => {
                 id={`addContact`}
                 className={'form-control custom-form'}
                 placeholder={'Напишите текст здесь...'}
-                onChange={(event) => handelInputChange(event, setTitle)}
-                value={title ?? ''}
+                onChange={(event) => handelInputChange(event, setNewContact)}
+                value={newContact ?? ''}
               />
             </div>
             <div className={'col-1'}></div>
             <div className={'col-1'}>
               <button
-                type={'submit'}
+                type={'button'}
                 className={'btn btn-outline-warning fw-bold me-4 px-4'}
+                onClick={() => console.log(newContact)}
               >
                 Добавить
               </button>

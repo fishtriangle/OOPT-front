@@ -62,7 +62,9 @@ function App() {
         <Route path={'/'} element={<Intro />} />
         <Route path={'bistrinskiy'} element={<Bistrinskiy />} />
         <Route path={'admin'} element={<Oopts />} />
+        <Route path={'admin/oopts'} element={<Oopts />} />
         <Route path={'admin/oopts/:id'} element={<Oopt />} />
+        <Route path={'admin/oopts/:id/photos'} element={<Photos />} />
         <Route path={'admin/oopts/:id/towns'} element={<Towns />} />
         <Route path={'admin/oopts/:id/towns/:townId'} element={<Town />} />
         <Route
@@ -131,6 +133,10 @@ function App() {
         <Route
           path={'admin/oopts/:id/holidays/:holidayId'}
           element={<Holiday />}
+        />
+        <Route
+          path={'admin/oopts/:id/holidays/:holidayId/photos'}
+          element={<Photos />}
         />
         {/*  http://localhost:3000/admin/oopts/2/tracks/4/stops*/}
       </Routes>

@@ -1,26 +1,13 @@
 import AdminLayout from '../../../layouts/AdminLayout';
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
-import { UPDATE_ENTERPRISE } from '../../../graphql/mutations/enterprise';
 import { Link, useLocation, useParams } from 'react-router-dom';
-import { GET_ONE_ENTERPRISE } from '../../../graphql/query/enterprise';
 import Loader from '../../../components/Loader/Loader';
-import { readFile } from '../../../utilities/filesInteractions';
-import {
-  IGetOOPT,
-  IGetOOPTVars,
-  IGetPoint,
-  IGetPointVars,
-  IGetTown,
-  IGetTownVars,
-  IPhoto,
-  IPoint,
-} from '../../../common/types';
-import { GET_OOPT_DESCRIPTION } from '../../../graphql/query/oopt';
-import styles from '../../Edit.module.scss';
-import Carousel from 'nuka-carousel';
-import { GET_TOWN } from '../../../graphql/query/town';
+import { IGetPoint, IGetPointVars } from '../../../common/types';
 import { GET_POINT } from '../../../graphql/query/point';
+import { UPDATE_POINT } from '../../../graphql/mutations/point';
+import { UPDATE_AXIS } from '../../../graphql/mutations/axis';
+import { Alert } from 'react-bootstrap';
 
 const Point = () => {
   const id = Number(useParams().id);
@@ -29,17 +16,18 @@ const Point = () => {
 
   const backLocation = useLocation().pathname.split('/').slice(0, -1).join('/');
 
-  // const [updateEnterprise] = useMutation(UPDATE_ENTERPRISE);
+  const [updatePoint] = useMutation(UPDATE_POINT);
+  const [updateAxis] = useMutation(UPDATE_AXIS);
 
   const [title, setTitle] = useState<string | null>(null);
   const [description, setDescription] = useState<string | null>(null);
-  const [contacts, setContacts] = useState<string | null>(null);
-  const [markerValue, setMarkerValue] = useState<string | null>(null);
-  const [markerTop, setMarkerTop] = useState<string | null>(null);
-  const [markerLeft, setMarkerLeft] = useState<string | null>(null);
-  const [markerCorner, setMarkerCorner] = useState<string | null>(null);
-
-  const photoFileItems = useRef<HTMLInputElement>(null);
+  const [route, setRoute] = useState<string | null>(null);
+  const [markerY, setMarkerY] = useState<string | null>(null);
+  const [markerX, setMarkerX] = useState<string | null>(null);
+  const [alertSuccess, setAlertSuccess] = useState<string | null>(null);
+  const [alertDanger, setAlertDanger] = useState<string | null>(null);
+  const [invalidX, setInvalidX] = useState<boolean>(false);
+  const [invalidY, setInvalidY] = useState<boolean>(false);
 
   const { data, loading, error, refetch } = useQuery<IGetPoint, IGetPointVars>(
     GET_POINT,
@@ -76,47 +64,74 @@ const Point = () => {
       | React.FormEvent<HTMLFormElement>
       | React.FormEvent<HTMLTextAreaElement>
   ) => {
-    // let logo: string | ArrayBuffer | null = null;
-    // event.preventDefault();
-    // const file = logoFileItem.current?.files?.[0];
-    //
-    // if (file) {
-    //   logo = await readFile(file);
-    // }
-    //
-    // const modifiedDescription = description
-    //   ? description.split('\n').join('&n')
-    //   : undefined;
-    //
-    // const input = {
-    //   id,
-    //   title: title || undefined,
-    //   logo: logo || undefined,
-    //   description: modifiedDescription,
-    //   contacts: contacts || undefined,
-    //   marker:
-    //     markerValue || markerTop || markerLeft || markerCorner
-    //       ? {
-    //           value: markerValue || undefined,
-    //           top: Number(markerTop) || undefined,
-    //           left: Number(markerLeft) || undefined,
-    //           corner: markerCorner || undefined,
-    //         }
-    //       : undefined,
-    // };
-    //
-    // updateEnterprise({
-    //   variables: { input },
-    // })
-    //   .then(({ data }) => {
-    //     refetch().catch((e) => console.error(e));
-    //     alert(JSON.stringify(data.updateEnterprise.content));
-    //   })
-    //   .catch((e) => console.error(e));
+    event.preventDefault();
+    setAlertDanger(null);
+    let validationErrors = false;
+
+    if (markerY !== null && !Number(markerY)) {
+      setInvalidY(true);
+      validationErrors = true;
+    } else {
+      setInvalidY(false);
+      validationErrors = false;
+    }
+
+    if (markerX !== null && !Number(markerX)) {
+      setInvalidX(true);
+      validationErrors = true;
+    } else {
+      setInvalidX(false);
+      validationErrors = false;
+    }
+
+    if (validationErrors) {
+      setAlertDanger('Координаты должны быть числом');
+      return;
+    }
+
+    const modifiedDescription = description
+      ? description.split('\n').join('&n')
+      : undefined;
+
+    const pointData = {
+      id: pointId,
+      title: title || undefined,
+      description: modifiedDescription,
+      route: route || undefined,
+    };
+
+    const axisData = {
+      id: data?.getPoint.axis[0].id,
+      title: undefined,
+      axisX: Number(markerX) || undefined,
+      axisY: Number(markerY) || undefined,
+    };
+
+    updatePoint({
+      variables: { data: pointData },
+    })
+      .then(() =>
+        updateAxis({
+          variables: { data: axisData },
+        })
+      )
+      .then(() => {
+        refetch().catch((e) => console.error(e));
+        setAlertSuccess('Изменения успешно внесены');
+        setAlertDanger(null);
+      })
+      .catch((e) => {
+        setAlertSuccess(null);
+        setAlertDanger(JSON.stringify(e.message));
+        console.error(e);
+      });
   };
 
   return (
     <AdminLayout>
+      {alertSuccess && <Alert variant={'success'}>{alertSuccess}</Alert>}
+      {alertDanger && <Alert variant={'danger'}>{alertDanger}</Alert>}
+
       <h3 className={'mb-3 mt-0 fs-1 w-75 align-self-center'}>
         Редактирование описания достопримечательности
       </h3>
@@ -144,11 +159,26 @@ const Point = () => {
           <div className={'col-9'}>
             <textarea
               id={'pointDescription'}
-              rows={8}
+              rows={6}
               placeholder={'Напишите текст здесь...'}
               className={'form-control custom-form add-scrollbar'}
               onChange={(event) => handelInputChange(event, setDescription)}
               value={description ?? data?.getPoint.description ?? ''}
+            />
+          </div>
+        </div>
+        <div className={'form-group row mb-2'}>
+          <label htmlFor={'pointRoute'} className='col-3 col-form-label'>
+            Как добраться:
+          </label>
+          <div className={'col-9'}>
+            <textarea
+              id={'pointRoute'}
+              rows={2}
+              placeholder={'Напишите текст здесь...'}
+              className={'form-control custom-form add-scrollbar'}
+              onChange={(event) => handelInputChange(event, setRoute)}
+              value={route ?? data?.getPoint.route ?? ''}
             />
           </div>
         </div>
@@ -166,10 +196,10 @@ const Point = () => {
           <div className={'col-1'}>
             <input
               id={'markerTop'}
-              className={'form-control custom-form'}
+              className={`form-control custom-form ${invalidY && 'is-invalid'}`}
               placeholder={'Y'}
-              onChange={(event) => handelInputChange(event, setMarkerTop)}
-              value={markerTop ?? data?.getPoint.axis[0].axisY ?? ''}
+              onChange={(event) => handelInputChange(event, setMarkerY)}
+              value={markerY ?? data?.getPoint.axis[0].axisY ?? ''}
             />
           </div>
           <div className={'col-1'}></div>
@@ -177,10 +207,10 @@ const Point = () => {
           <div className={'col-1'}>
             <input
               id={'markerLeft'}
-              className={'form-control custom-form'}
+              className={`form-control custom-form ${invalidX && 'is-invalid'}`}
               placeholder={'X'}
-              onChange={(event) => handelInputChange(event, setMarkerLeft)}
-              value={markerLeft ?? data?.getPoint.axis[0].axisX ?? ''}
+              onChange={(event) => handelInputChange(event, setMarkerX)}
+              value={markerX ?? data?.getPoint.axis[0].axisX ?? ''}
             />
           </div>
         </div>

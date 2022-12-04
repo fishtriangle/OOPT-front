@@ -1,41 +1,27 @@
 import AdminLayout from '../../../layouts/AdminLayout';
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
-import { UPDATE_ENTERPRISE } from '../../../graphql/mutations/enterprise';
 import { Link, useParams } from 'react-router-dom';
-import { GET_ONE_ENTERPRISE } from '../../../graphql/query/enterprise';
 import Loader from '../../../components/Loader/Loader';
-import { readFile } from '../../../utilities/filesInteractions';
-import {
-  IGetMaster,
-  IGetMasterVars,
-  IGetOOPT,
-  IGetOOPTVars,
-  IGetTown,
-  IGetTownVars,
-  IPhoto,
-} from '../../../common/types';
-import { GET_OOPT_DESCRIPTION } from '../../../graphql/query/oopt';
-import styles from '../../Edit.module.scss';
-import Carousel from 'nuka-carousel';
-import { GET_TOWN } from '../../../graphql/query/town';
+import { IGetMaster, IGetMasterVars } from '../../../common/types';
 import { GET_MASTER } from '../../../graphql/query/master';
+import { UPDATE_MASTER } from '../../../graphql/mutations/masters';
+import { UPDATE_CONTACT } from '../../../graphql/mutations/contact';
+import { Alert } from 'react-bootstrap';
 
 const Master = () => {
   const id = Number(useParams().id);
   const masterId = Number(useParams().masterId);
 
-  // const [updateEnterprise] = useMutation(UPDATE_ENTERPRISE);
+  const [updateMaster] = useMutation(UPDATE_MASTER);
+  const [updateContact] = useMutation(UPDATE_CONTACT);
 
   const [title, setTitle] = useState<string | null>(null);
   const [description, setDescription] = useState<string | null>(null);
-  const [contacts, setContacts] = useState<string | null>(null);
-  const [markerValue, setMarkerValue] = useState<string | null>(null);
-  const [markerTop, setMarkerTop] = useState<string | null>(null);
-  const [markerLeft, setMarkerLeft] = useState<string | null>(null);
-  const [markerCorner, setMarkerCorner] = useState<string | null>(null);
-
-  const photoFileItems = useRef<HTMLInputElement>(null);
+  const [newContact, setNewContact] = useState<string | null>(null);
+  const [contacts, setContacts] = useState<string[]>([]);
+  const [alertSuccess, setAlertSuccess] = useState<string | null>(null);
+  const [alertDanger, setAlertDanger] = useState<string | null>(null);
 
   const { data, loading, error, refetch } = useQuery<
     IGetMaster,
@@ -58,7 +44,7 @@ const Master = () => {
       </>
     );
 
-  const handelInputChange = (
+  const handleInputChange = (
     event:
       | React.ChangeEvent<HTMLInputElement>
       | React.ChangeEvent<HTMLTextAreaElement>,
@@ -67,53 +53,69 @@ const Master = () => {
     handler(event.target.value);
   };
 
+  const handleInputChangeInArray = (
+    event:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLTextAreaElement>,
+    handler: React.Dispatch<React.SetStateAction<string[]>>,
+    index: number,
+    array: string[]
+  ) => {
+    const input = [...array];
+    input[index] = event.target.value;
+    handler(input);
+  };
+
   const handleFormSubmit = async (
     event:
       | React.FormEvent<HTMLFormElement>
       | React.FormEvent<HTMLTextAreaElement>
   ) => {
-    console.log('1');
-    // let logo: string | ArrayBuffer | null = null;
-    // event.preventDefault();
-    // const file = logoFileItem.current?.files?.[0];
-    //
-    // if (file) {
-    //   logo = await readFile(file);
-    // }
-    //
-    // const modifiedDescription = description
-    //   ? description.split('\n').join('&n')
-    //   : undefined;
-    //
-    // const input = {
-    //   id,
-    //   title: title || undefined,
-    //   logo: logo || undefined,
-    //   description: modifiedDescription,
-    //   contacts: contacts || undefined,
-    //   marker:
-    //     markerValue || markerTop || markerLeft || markerCorner
-    //       ? {
-    //           value: markerValue || undefined,
-    //           top: Number(markerTop) || undefined,
-    //           left: Number(markerLeft) || undefined,
-    //           corner: markerCorner || undefined,
-    //         }
-    //       : undefined,
-    // };
-    //
-    // updateEnterprise({
-    //   variables: { input },
-    // })
-    //   .then(({ data }) => {
-    //     refetch().catch((e) => console.error(e));
-    //     alert(JSON.stringify(data.updateEnterprise.content));
-    //   })
-    //   .catch((e) => console.error(e));
+    event.preventDefault();
+    setAlertSuccess(null);
+    setAlertDanger(null);
+
+    const masterData = {
+      id: masterId,
+      title: title || undefined,
+      description: description || undefined,
+    };
+
+    const contactsData = data?.getMaster.contacts.map((contact, index) => ({
+      id: contact.id,
+      description: contacts[index] || undefined,
+    }));
+
+    updateMaster({
+      variables: {
+        data: masterData,
+      },
+    })
+      .then(() => {
+        if (contactsData && contactsData.length > 0) {
+          const promises: Promise<any>[] = contactsData.map((data) =>
+            updateContact({ variables: { data } })
+          );
+          Promise.all(promises);
+        }
+      })
+      .then(() => {
+        refetch().catch((e) => console.error(e));
+        setAlertSuccess('Изменения успешно внесены');
+        setAlertDanger(null);
+      })
+      .catch((e) => {
+        setAlertSuccess(null);
+        setAlertDanger(JSON.stringify(e.message));
+        console.error(e);
+      });
   };
 
   return (
     <AdminLayout>
+      {alertSuccess && <Alert variant={'success'}>{alertSuccess}</Alert>}
+      {alertDanger && <Alert variant={'danger'}>{alertDanger}</Alert>}
+
       <h3 className={'mb-3 mt-0 fs-1 w-75 align-self-center'}>
         Редактирование информации о мастере
       </h3>
@@ -128,7 +130,7 @@ const Master = () => {
               id={'masterTitle'}
               className={'form-control custom-form'}
               placeholder={'Напишите текст здесь...'}
-              onChange={(event) => handelInputChange(event, setTitle)}
+              onChange={(event) => handleInputChange(event, setTitle)}
               value={title ?? data?.getMaster.title ?? ''}
             />
           </div>
@@ -143,7 +145,7 @@ const Master = () => {
               rows={6}
               placeholder={'Напишите текст здесь...'}
               className={'form-control custom-form add-scrollbar'}
-              onChange={(event) => handelInputChange(event, setDescription)}
+              onChange={(event) => handleInputChange(event, setDescription)}
               value={description ?? data?.getMaster.description ?? ''}
             />
           </div>
@@ -152,14 +154,21 @@ const Master = () => {
         Контактная информация:
         <div className={'form-group row my-2'}>
           {data?.getMaster.contacts &&
-            data?.getMaster.contacts.map((contact) => (
+            data?.getMaster.contacts.map((contact, index) => (
               <div className={'col-6 d-flex'} key={contact.id}>
                 <input
                   id={`contactDescription${contact.id}`}
                   className={'form-control custom-form w-70 me-2'}
                   placeholder={'Напишите текст здесь...'}
-                  onChange={(event) => handelInputChange(event, setTitle)}
-                  value={title ?? contact.description ?? ''}
+                  onChange={(event) =>
+                    handleInputChangeInArray(
+                      event,
+                      setContacts,
+                      index,
+                      contacts
+                    )
+                  }
+                  value={contacts[index] ?? contact.description ?? ''}
                 />
                 <button
                   type={'submit'}
@@ -179,15 +188,16 @@ const Master = () => {
                 id={`addContact`}
                 className={'form-control custom-form'}
                 placeholder={'Напишите текст здесь...'}
-                onChange={(event) => handelInputChange(event, setTitle)}
-                value={title ?? ''}
+                onChange={(event) => handleInputChange(event, setNewContact)}
+                value={newContact ?? ''}
               />
             </div>
             <div className={'col-1'}></div>
             <div className={'col-1'}>
               <button
-                type={'submit'}
+                type={'button'}
                 className={'btn btn-outline-warning fw-bold me-4 px-4'}
+                onClick={() => console.log(newContact)}
               >
                 Добавить
               </button>

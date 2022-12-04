@@ -76,7 +76,13 @@ const Holidays: React.FC = () => {
                         to={`/admin/oopts/${ooptId}/holidays/${item.id}`}
                         className='btn btn-sm bg-white text-black fw-bold me-3 px-3 py-2 my-2'
                       >
-                        Описание и фотографии
+                        Описание
+                      </Link>
+                      <Link
+                        to={`/admin/oopts/${ooptId}/holidays/${item.id}/photos`}
+                        className='btn btn-sm bg-white text-black fw-bold me-3 px-3 py-2 my-2'
+                      >
+                        Фотографии
                       </Link>
                       <button
                         type='button'

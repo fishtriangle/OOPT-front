@@ -1,46 +1,31 @@
 import AdminLayout from '../../../layouts/AdminLayout';
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
-import { UPDATE_ENTERPRISE } from '../../../graphql/mutations/enterprise';
 import { Link, useLocation, useParams } from 'react-router-dom';
-import { GET_ONE_ENTERPRISE } from '../../../graphql/query/enterprise';
 import Loader from '../../../components/Loader/Loader';
-import { readFile } from '../../../utilities/filesInteractions';
-import {
-  IGetOOPT,
-  IGetOOPTVars,
-  IGetPoint,
-  IGetPointVars,
-  IGetTown,
-  IGetTownVars,
-  IGetTrack,
-  IGetTrackVars,
-  IPhoto,
-  IPoint,
-} from '../../../common/types';
-import { GET_OOPT_DESCRIPTION } from '../../../graphql/query/oopt';
-import styles from '../../Edit.module.scss';
-import Carousel from 'nuka-carousel';
-import { GET_TOWN } from '../../../graphql/query/town';
-import { GET_POINT } from '../../../graphql/query/point';
+import { IGetTrack, IGetTrackVars } from '../../../common/types';
 import { GET_TRACK } from '../../../graphql/query/track';
+import { UPDATE_TRACK } from '../../../graphql/mutations/track';
+import { Alert } from 'react-bootstrap';
 
 const Track = () => {
   const id = Number(useParams().id);
   const trackId = Number(useParams().trackId);
+
   const backLocation = useLocation().pathname.split('/').slice(0, -1).join('/');
 
-  // const [updateEnterprise] = useMutation(UPDATE_ENTERPRISE);
+  const [updateTrack] = useMutation(UPDATE_TRACK);
 
   const [title, setTitle] = useState<string | null>(null);
   const [description, setDescription] = useState<string | null>(null);
-  const [contacts, setContacts] = useState<string | null>(null);
-  const [markerValue, setMarkerValue] = useState<string | null>(null);
-  const [markerTop, setMarkerTop] = useState<string | null>(null);
-  const [markerLeft, setMarkerLeft] = useState<string | null>(null);
-  const [markerCorner, setMarkerCorner] = useState<string | null>(null);
-
-  const photoFileItems = useRef<HTMLInputElement>(null);
+  const [type, setType] = useState<string | null>(null);
+  const [transport, setTransport] = useState<string | null>(null);
+  const [length, setLength] = useState<string | null>(null);
+  const [timeInTrack, setTimeInTrack] = useState<string | null>(null);
+  const [season, setSeason] = useState<string | null>(null);
+  const [water, setWater] = useState<string | null>(null);
+  const [alertSuccess, setAlertSuccess] = useState<string | null>(null);
+  const [alertDanger, setAlertDanger] = useState<string | null>(null);
 
   const { data, loading, error, refetch } = useQuery<IGetTrack, IGetTrackVars>(
     GET_TRACK,
@@ -77,47 +62,44 @@ const Track = () => {
       | React.FormEvent<HTMLFormElement>
       | React.FormEvent<HTMLTextAreaElement>
   ) => {
-    // let logo: string | ArrayBuffer | null = null;
-    // event.preventDefault();
-    // const file = logoFileItem.current?.files?.[0];
-    //
-    // if (file) {
-    //   logo = await readFile(file);
-    // }
-    //
-    // const modifiedDescription = description
-    //   ? description.split('\n').join('&n')
-    //   : undefined;
-    //
-    // const input = {
-    //   id,
-    //   title: title || undefined,
-    //   logo: logo || undefined,
-    //   description: modifiedDescription,
-    //   contacts: contacts || undefined,
-    //   marker:
-    //     markerValue || markerTop || markerLeft || markerCorner
-    //       ? {
-    //           value: markerValue || undefined,
-    //           top: Number(markerTop) || undefined,
-    //           left: Number(markerLeft) || undefined,
-    //           corner: markerCorner || undefined,
-    //         }
-    //       : undefined,
-    // };
-    //
-    // updateEnterprise({
-    //   variables: { input },
-    // })
-    //   .then(({ data }) => {
-    //     refetch().catch((e) => console.error(e));
-    //     alert(JSON.stringify(data.updateEnterprise.content));
-    //   })
-    //   .catch((e) => console.error(e));
+    event.preventDefault();
+
+    const modifiedDescription = description
+      ? description.split('\n').join('&n')
+      : undefined;
+
+    const trackData = {
+      id: trackId,
+      title: title || undefined,
+      description: modifiedDescription,
+      length: length || undefined,
+      season: season || undefined,
+      timeInTrack: timeInTrack || undefined,
+      transport: transport || undefined,
+      type: type || undefined,
+      water: water || undefined,
+    };
+
+    updateTrack({
+      variables: { data: trackData },
+    })
+      .then(() => {
+        refetch().catch((e) => console.error(e));
+        setAlertSuccess('Изменения успешно внесены');
+        setAlertDanger(null);
+      })
+      .catch((e) => {
+        setAlertSuccess(null);
+        setAlertDanger(JSON.stringify(e.message));
+        console.error(e);
+      });
   };
 
   return (
     <AdminLayout>
+      {alertSuccess && <Alert variant={'success'}>{alertSuccess}</Alert>}
+      {alertDanger && <Alert variant={'danger'}>{alertDanger}</Alert>}
+
       <h3 className={'mb-3 mt-0 fs-1 w-75 align-self-center'}>
         Редактирование описания маршрутов
       </h3>
@@ -163,8 +145,8 @@ const Track = () => {
               id={'trackType'}
               className={'form-control custom-form'}
               placeholder={'Напишите текст здесь...'}
-              onChange={(event) => handelInputChange(event, setTitle)}
-              value={title ?? data?.getTrack.type ?? ''}
+              onChange={(event) => handelInputChange(event, setType)}
+              value={type ?? data?.getTrack.type ?? ''}
             />
           </div>
           <label
@@ -178,8 +160,8 @@ const Track = () => {
               id={'trackLength'}
               className={'form-control custom-form'}
               placeholder={'Напишите текст здесь...'}
-              onChange={(event) => handelInputChange(event, setTitle)}
-              value={title ?? data?.getTrack.length ?? ''}
+              onChange={(event) => handelInputChange(event, setLength)}
+              value={length ?? data?.getTrack.length ?? ''}
             />
           </div>
         </div>
@@ -193,8 +175,8 @@ const Track = () => {
               id={'trackTransport'}
               className={'form-control custom-form'}
               placeholder={'Напишите текст здесь...'}
-              onChange={(event) => handelInputChange(event, setTitle)}
-              value={title ?? data?.getTrack.transport ?? ''}
+              onChange={(event) => handelInputChange(event, setTransport)}
+              value={transport ?? data?.getTrack.transport ?? ''}
             />
           </div>
           <label
@@ -208,8 +190,8 @@ const Track = () => {
               id={'trackTimeInTrack'}
               className={'form-control custom-form'}
               placeholder={'Напишите текст здесь...'}
-              onChange={(event) => handelInputChange(event, setTitle)}
-              value={title ?? data?.getTrack.timeInTrack ?? ''}
+              onChange={(event) => handelInputChange(event, setTimeInTrack)}
+              value={timeInTrack ?? data?.getTrack.timeInTrack ?? ''}
             />
           </div>
         </div>
@@ -223,8 +205,8 @@ const Track = () => {
               id={'trackSeason'}
               className={'form-control custom-form'}
               placeholder={'Напишите текст здесь...'}
-              onChange={(event) => handelInputChange(event, setTitle)}
-              value={title ?? data?.getTrack.season ?? ''}
+              onChange={(event) => handelInputChange(event, setSeason)}
+              value={season ?? data?.getTrack.season ?? ''}
             />
           </div>
           <label
@@ -238,8 +220,8 @@ const Track = () => {
               id={'trackWater'}
               className={'form-control custom-form'}
               placeholder={'Напишите текст здесь...'}
-              onChange={(event) => handelInputChange(event, setTitle)}
-              value={title ?? data?.getTrack.water ?? ''}
+              onChange={(event) => handelInputChange(event, setWater)}
+              value={water ?? data?.getTrack.water ?? ''}
             />
           </div>
         </div>
