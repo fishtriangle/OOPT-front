@@ -5,6 +5,7 @@ export const GET_HOLIDAY = gql`
     getHoliday(holidayUniqueInput: $holidayUniqueInput) {
       id
       description
+      disabled
       photos {
         id
         small

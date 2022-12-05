@@ -25,6 +25,8 @@ const Oopts: React.FC = () => {
 
   const oopts = data?.getAllOOPTs;
 
+  console.log(oopts);
+
   return (
     <>
       <AdminLayout>

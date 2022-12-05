@@ -1,17 +1,34 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-import { useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { IGetOOPT, IGetOOPTVars } from '../../../common/types';
 import Loader from '../../../components/Loader/Loader';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import AdminLayout from '../../../layouts/AdminLayout';
 import { GET_OOPT_HOLIDAYS } from '../../../graphql/query/oopt';
+import { Alert, Modal } from 'react-bootstrap';
+import {
+  CREATE_HOLIDAY,
+  DELETE_HOLIDAY,
+  UPDATE_HOLIDAY,
+} from '../../../graphql/mutations/holiday';
 
 const Holidays: React.FC = () => {
   const navigate = useNavigate();
+
   const ooptId = Number(useParams().id);
 
-  const { data, loading, error } = useQuery<IGetOOPT, IGetOOPTVars>(
+  const [createHoliday] = useMutation(CREATE_HOLIDAY);
+  const [deleteHoliday] = useMutation(DELETE_HOLIDAY);
+  const [updateHoliday] = useMutation(UPDATE_HOLIDAY);
+
+  const [show, setShow] = useState<boolean>(false);
+  const [title, setTitle] = useState<string>('');
+  const [description, setDescription] = useState<string>('');
+  const [alertSuccess, setAlertSuccess] = useState<string | null>(null);
+  const [alertDanger, setAlertDanger] = useState<string | null>(null);
+
+  const { data, loading, error, refetch } = useQuery<IGetOOPT, IGetOOPTVars>(
     GET_OOPT_HOLIDAYS,
     {
       variables: {
@@ -31,11 +48,114 @@ const Holidays: React.FC = () => {
         <p>{error.message}</p>
       </>
     );
+
+  const handelInputChange = (
+    event:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLTextAreaElement>,
+    handler: React.Dispatch<React.SetStateAction<string>>
+  ) => {
+    handler(event.target.value);
+  };
+
+  const handleCreateHoliday = async (
+    event:
+      | React.FormEvent<HTMLFormElement>
+      | React.FormEvent<HTMLTextAreaElement>
+  ) => {
+    event.preventDefault();
+
+    const modifiedDescription = description
+      ? description.split('\n').join('&n')
+      : undefined;
+
+    const data = {
+      title: title || undefined,
+      description: modifiedDescription,
+      parentId: ooptId,
+    };
+
+    createHoliday({
+      variables: { data },
+    })
+      .then(() => {
+        refetch().catch((e) => console.error(e));
+        setAlertSuccess('Изменения успешно внесены');
+        setAlertDanger(null);
+        setShow(false);
+        setTitle('');
+        setDescription('');
+      })
+      .catch((e) => {
+        setAlertSuccess(null);
+        setAlertDanger(JSON.stringify(e.message));
+        console.error(e);
+        setShow(false);
+        setTitle('');
+        setDescription('');
+      });
+  };
+
+  const handleDisableHoliday = async (
+    event: React.MouseEvent<HTMLButtonElement>,
+    holidayId: number,
+    isDisabled: boolean | undefined
+  ) => {
+    event.preventDefault();
+
+    const data = {
+      id: holidayId,
+      disabled: !isDisabled,
+    };
+
+    updateHoliday({
+      variables: { data },
+    })
+      .then(() => {
+        refetch().catch((e) => console.error(e));
+        setAlertSuccess('Изменения успешно внесены');
+        setAlertDanger(null);
+        setShow(false);
+      })
+      .catch((e) => {
+        setAlertSuccess(null);
+        setAlertDanger(JSON.stringify(e.message));
+        console.error(e);
+        setShow(false);
+      });
+  };
+
+  const handleDeleteHoliday = async (
+    event: React.MouseEvent<HTMLButtonElement>,
+    holidayId: number
+  ) => {
+    event.preventDefault();
+
+    deleteHoliday({
+      variables: { deleteHolidayId: holidayId },
+    })
+      .then(() => {
+        refetch().catch((e) => console.error(e));
+        setAlertSuccess('Запись удалена');
+        setAlertDanger(null);
+        setShow(false);
+      })
+      .catch((e) => {
+        setAlertSuccess(null);
+        setAlertDanger(JSON.stringify(e.message));
+        console.error(e);
+        setShow(false);
+      });
+  };
+
   const loadedData = data?.getOOPT.holidays;
 
   return (
     <>
       <AdminLayout>
+        {alertSuccess && <Alert variant={'success'}>{alertSuccess}</Alert>}
+        {alertDanger && <Alert variant={'danger'}>{alertDanger}</Alert>}
+
         <div className={'d-flex flex-row flex-nowrap justify-content-between'}>
           <h2 className={'text-uppercase mb-5 text-white'}>
             Список праздников:
@@ -43,7 +163,7 @@ const Holidays: React.FC = () => {
           <button
             type='button'
             className='btn w-fit bg-warning text-black fw-bold me-3 px-5 py-2 mb-5'
-            onClick={() => navigate(`/admin/oopts/${ooptId}/towns`)}
+            onClick={() => setShow(true)}
           >
             Добавить праздник
           </button>
@@ -51,8 +171,8 @@ const Holidays: React.FC = () => {
 
         {loadedData && loadedData.length > 0 && (
           <div
-            /*className={`${styles.editPage_tableContainer}`}*/ className={`${
-              loadedData.length > 10 && 'add-scrollbar admin-list-h'
+            className={`${
+              loadedData.length > 5 && 'add-scrollbar admin-list-h'
             }`}
           >
             <table className={'table text-primary border-primary'}>
@@ -72,6 +192,15 @@ const Holidays: React.FC = () => {
                     </td>
                     <td className={'align-baseline'}>{item.title}</td>
                     <td className={'d-flex flex-row justify-content-end'}>
+                      <button
+                        type='button'
+                        className='btn btn-sm bg-warning text-black fw-bold me-3 px-3 py-2 my-2'
+                        onClick={(event) =>
+                          handleDisableHoliday(event, item.id, item.disabled)
+                        }
+                      >
+                        {item.disabled ? 'Включить' : 'Отключить'}
+                      </button>
                       <Link
                         to={`/admin/oopts/${ooptId}/holidays/${item.id}`}
                         className='btn btn-sm bg-white text-black fw-bold me-3 px-3 py-2 my-2'
@@ -86,12 +215,10 @@ const Holidays: React.FC = () => {
                       </Link>
                       <button
                         type='button'
-                        className='btn btn-sm bg-warning text-black fw-bold me-3 px-3 py-2 my-2'
-                        // onClick={() =>
-                        //   handleDeleteEnterpriseClick(enterprise.id)
-                        // }
+                        className='btn btn-sm btn-danger text-black fw-bold me-3 px-3 py-2 my-2'
+                        onClick={(event) => handleDeleteHoliday(event, item.id)}
                       >
-                        {item.disabled ? 'Включить' : 'Отключить'}
+                        Удалить
                       </button>
                     </td>
                   </tr>
@@ -109,9 +236,78 @@ const Holidays: React.FC = () => {
           Назад
         </button>
       </AdminLayout>
+      <Modal
+        show={show}
+        onHide={() => setShow(false)}
+        dialogClassName={'custom-modal'}
+        // width={'lg'}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>
+            <span className={'text-black fw-bold m-auto ms-5'}>
+              Добавить праздник
+            </span>
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {' '}
+          <form
+            className={'w-75 align-self-center m-auto'}
+            onSubmit={handleCreateHoliday}
+          >
+            <div className={'form-group row mb-2'}>
+              <label
+                htmlFor={'holidayTitle'}
+                className='text-black fw-bold col-3 col-form-label'
+              >
+                Название праздника:
+              </label>
+              <div className={'col-9'}>
+                <input
+                  id={'holidayTitle'}
+                  className={'form-control custom-form text-black'}
+                  placeholder={'Напишите текст здесь...'}
+                  onChange={(event) => handelInputChange(event, setTitle)}
+                  value={title ?? ''}
+                />
+              </div>
+            </div>
 
-      {/*<MainMenu />*/}
-      {/*<DescriptionBlock />*/}
+            <div className={'form-group row mb-2'}>
+              <label
+                htmlFor={'holidayDescription'}
+                className='col-3 col-form-label text-black fw-bold'
+              >
+                Описание праздника:
+              </label>
+              <div className={'col-9'}>
+                <textarea
+                  id={'holidayDescription'}
+                  rows={12}
+                  placeholder={'Напишите текст здесь...'}
+                  className={
+                    'text-black form-control custom-form add-scrollbar'
+                  }
+                  onChange={(event) => handelInputChange(event, setDescription)}
+                  value={description ?? ''}
+                />
+              </div>
+            </div>
+            <br />
+
+            <div className={'mb-2 d-flex justify-content-center'}>
+              <button
+                type={'submit'}
+                className={'btn btn-lg bg-warning fw-bold me-4 px-4'}
+              >
+                Опубликовать
+              </button>
+            </div>
+          </form>
+        </Modal.Body>
+        <Modal.Footer></Modal.Footer>
+      </Modal>
     </>
   );
 };

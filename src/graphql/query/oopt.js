@@ -212,19 +212,21 @@ export const GET_OOPT_SERVICES = gql`
       services {
         id
         title
+        disabled
       }
     }
   }
 `;
 
 export const GET_OOPT_HOLIDAYS = gql`
-  query GetOOPT($ooptUniqueInput: OoptUniqueInput!) {
+  query Query($ooptUniqueInput: OoptUniqueInput!) {
     getOOPT(ooptUniqueInput: $ooptUniqueInput) {
+      id
       holidays {
         id
         title
+        disabled
       }
-      id
       title
     }
   }

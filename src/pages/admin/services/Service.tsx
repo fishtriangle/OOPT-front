@@ -24,7 +24,11 @@ import { GET_TOWN } from '../../../graphql/query/town';
 import { GET_MASTER } from '../../../graphql/query/master';
 import { GET_SERVICE } from '../../../graphql/query/service';
 import { UPDATE_MASTER } from '../../../graphql/mutations/masters';
-import { UPDATE_CONTACT } from '../../../graphql/mutations/contact';
+import {
+  CREATE_CONTACT,
+  DELETE_CONTACT,
+  UPDATE_CONTACT,
+} from '../../../graphql/mutations/contact';
 import { UPDATE_SERVICE } from '../../../graphql/mutations/service';
 import { Alert } from 'react-bootstrap';
 
@@ -34,6 +38,8 @@ const Service = () => {
 
   const [updateService] = useMutation(UPDATE_SERVICE);
   const [updateContact] = useMutation(UPDATE_CONTACT);
+  const [createContact] = useMutation(CREATE_CONTACT);
+  const [deleteContact] = useMutation(DELETE_CONTACT);
 
   const [title, setTitle] = useState<string | null>(null);
   const [description, setDescription] = useState<string | null>(null);
@@ -130,6 +136,59 @@ const Service = () => {
       });
   };
 
+  const handleCreateContact = async (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+
+    const modifiedDescription = newContact
+      ? newContact.split('\n').join('&n')
+      : undefined;
+
+    const data = {
+      description: modifiedDescription,
+      parentId: serviceId,
+      parent: 'service',
+    };
+
+    createContact({
+      variables: { data },
+    })
+      .then(() => {
+        refetch().catch((e) => console.error(e));
+        setAlertSuccess('Изменения успешно внесены');
+        setAlertDanger(null);
+        setNewContact('');
+      })
+      .catch((e) => {
+        setAlertSuccess(null);
+        setAlertDanger(JSON.stringify(e.message));
+        console.error(e);
+        setNewContact('');
+      });
+  };
+
+  const handleDeleteContact = async (
+    event: React.MouseEvent<HTMLButtonElement>,
+    contactId: number
+  ) => {
+    event.preventDefault();
+
+    deleteContact({
+      variables: { deleteContactId: contactId },
+    })
+      .then(() => {
+        refetch().catch((e) => console.error(e));
+        setAlertSuccess('Контакт удален');
+        setAlertDanger(null);
+      })
+      .catch((e) => {
+        setAlertSuccess(null);
+        setAlertDanger(JSON.stringify(e.message));
+        console.error(e);
+      });
+  };
+
   return (
     <AdminLayout>
       {alertSuccess && <Alert variant={'success'}>{alertSuccess}</Alert>}
@@ -139,7 +198,14 @@ const Service = () => {
         Редактирование информации о компании
       </h3>
       <br />
-      <form className={'w-75 align-self-center'} onSubmit={handleFormSubmit}>
+      <form
+        className={`w-75 align-self-center ${
+          data?.getService.contacts &&
+          data?.getService.contacts.length > 2 &&
+          'add-scrollbar admin-list-h-l'
+        }`}
+        onSubmit={handleFormSubmit}
+      >
         <div className={'form-group row mb-2'}>
           <label htmlFor={'serviceTitle'} className='col-3 col-form-label'>
             Компания:
@@ -177,7 +243,7 @@ const Service = () => {
         <div className={'form-group row my-2'}>
           {data?.getService.contacts &&
             data?.getService.contacts.map((contact, index) => (
-              <div className={'col-6 d-flex'} key={contact.id}>
+              <div className={'col-6 d-flex mb-2'} key={contact.id}>
                 <input
                   id={`contactDescription${contact.id}`}
                   className={'form-control custom-form w-70 me-2'}
@@ -193,8 +259,9 @@ const Service = () => {
                   value={contacts[index] ?? contact.description ?? ''}
                 />
                 <button
-                  type={'submit'}
+                  type={'button'}
                   className={'btn btn-outline-warning fw-bold me-4 px-4'}
+                  onClick={(event) => handleDeleteContact(event, contact.id)}
                 >
                   Удалить
                 </button>
@@ -219,7 +286,7 @@ const Service = () => {
               <button
                 type={'button'}
                 className={'btn btn-outline-warning fw-bold me-4 px-4'}
-                onClick={() => console.log(newContact)}
+                onClick={handleCreateContact}
               >
                 Добавить
               </button>

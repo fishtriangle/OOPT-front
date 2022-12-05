@@ -12906,7 +12906,16 @@ textarea {
 }
 
 .admin-list-h {
-  height: 1160px;
+  height: 1000px;
+}
+
+.admin-list-h-l {
+  height: 1200px;
+}
+
+.custom-modal {
+  width: 2500px;
+  max-width: 2500px;
 }
 
 /*# sourceMappingURL=styles.css.map */

@@ -1,15 +1,32 @@
 import { gql } from '@apollo/client';
 
-// export const CREATE_HOLIDAY = gql``;
+export const CREATE_HOLIDAY = gql`
+  mutation CreateHoliday($data: HolidayCreateInput!) {
+    createHoliday(data: $data) {
+      description
+      id
+      title
+      disabled
+    }
+  }
+`;
 
 export const UPDATE_HOLIDAY = gql`
-  mutation updateOOPT($data: OoptUpdateInput!) {
-    updateOOPT(data: $data) {
+  mutation Mutation($data: HolidayUpdateInput!) {
+    updateHoliday(data: $data) {
       id
+      disabled
+      description
+      title
+    }
+  }
+`;
+
+export const DELETE_HOLIDAY = gql`
+  mutation DeleteHoliday($deleteHolidayId: Float!) {
+    deleteHoliday(id: $deleteHolidayId) {
       title
       description
     }
   }
 `;
-
-// export const DELETE_HOLIDAY = gql``;
