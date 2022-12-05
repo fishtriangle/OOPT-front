@@ -31,6 +31,7 @@ export const GET_TRACK = gql`
         title
         description
         route
+        disabled
         axis {
           id
           title

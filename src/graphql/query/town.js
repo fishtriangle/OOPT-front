@@ -11,6 +11,7 @@ export const GET_TOWN = gql`
         title
         description
         route
+        disabled
       }
       photos {
         id

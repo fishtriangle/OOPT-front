@@ -1,6 +1,15 @@
 import { gql } from '@apollo/client';
 
-// export const CREATE_TOWN = gql``;
+export const CREATE_TOWN = gql`
+  mutation CreateTown($data: TownCreateInput!) {
+    createTown(data: $data) {
+      description
+      disabled
+      id
+      title
+    }
+  }
+`;
 
 export const UPDATE_TOWN = gql`
   mutation UpdateTown($data: TownUpdateInput!) {
@@ -12,4 +21,13 @@ export const UPDATE_TOWN = gql`
   }
 `;
 
-// export const DELETE_TOWN = gql``;
+export const DELETE_TOWN = gql`
+  mutation DeleteTown($deleteTownId: Float!) {
+    deleteTown(id: $deleteTownId) {
+      description
+      disabled
+      id
+      title
+    }
+  }
+`;

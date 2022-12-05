@@ -5,7 +5,11 @@ import { Link, useLocation, useParams } from 'react-router-dom';
 import Loader from '../../../components/Loader/Loader';
 import { IGetTrack, IGetTrackVars } from '../../../common/types';
 import { GET_TRACK } from '../../../graphql/query/track';
-import { UPDATE_AXIS } from '../../../graphql/mutations/axis';
+import {
+  CREATE_AXIS,
+  DELETE_AXIS,
+  UPDATE_AXIS,
+} from '../../../graphql/mutations/axis';
 import { Alert } from 'react-bootstrap';
 
 const Routes = () => {
@@ -14,6 +18,8 @@ const Routes = () => {
   const backLocation = useLocation().pathname.split('/').slice(0, -2).join('/');
 
   const [updateAxis] = useMutation(UPDATE_AXIS);
+  const [createAxis] = useMutation(CREATE_AXIS);
+  const [deleteAxis] = useMutation(DELETE_AXIS);
 
   const [title, setTitle] = useState<string[]>([]);
   const [markersY, setMarkersY] = useState<string[]>([]);
@@ -43,14 +49,6 @@ const Routes = () => {
         <p>{error.message}</p>
       </>
     );
-
-  // let x: string[] = [];
-  // let y: string[] = [];
-  //
-  // if (data?.getTrack.axises) {
-  //   x = data?.getTrack.axises.map(({ axisX }) => `${axisX}`);
-  //   y = data?.getTrack.axises.map(({ axisY }) => `${axisY}`);
-  // }
 
   const handelInputChange = (
     event:
@@ -118,10 +116,65 @@ const Routes = () => {
           setAlertSuccess('Изменения успешно внесены');
         })
         .catch((e) => {
-          setAlertDanger(JSON.stringify(e.message));
-          console.error(e);
+          if (e.message.includes('Timed out during query execution.')) {
+            refetch().catch((e) => console.error(e));
+            setAlertSuccess('Изменения успешно внесены');
+          } else {
+            setAlertDanger(JSON.stringify(e.message));
+            console.error(e);
+          }
         });
     }
+  };
+
+  const handleCreateAxis = async (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+    const data = {
+      title: undefined,
+      axisX: 1,
+      axisY: 1,
+      parent: 'track',
+      parentId: trackId,
+    };
+
+    createAxis({
+      variables: { data },
+    })
+      .then(() => {
+        refetch().catch((e) => console.error(e));
+        setAlertSuccess('Изменения успешно внесены');
+        setAlertDanger(null);
+      })
+      .catch((e) => {
+        setAlertSuccess(null);
+        setAlertDanger(JSON.stringify(e.message));
+        console.error(e);
+      });
+  };
+
+  const handleDeleteAxis = async (
+    event: React.MouseEvent<HTMLButtonElement>,
+    axisId: number,
+    index: number
+  ) => {
+    event.preventDefault();
+
+    deleteAxis({
+      variables: { deleteAxisId: axisId },
+    })
+      .then(() => {
+        refetch().catch((e) => console.error(e));
+        setAlertSuccess('Запись удалена');
+        setAlertDanger(null);
+        setTitle([]);
+      })
+      .catch((e) => {
+        setAlertSuccess(null);
+        setAlertDanger(JSON.stringify(e.message));
+        console.error(e);
+      });
   };
 
   return (
@@ -133,13 +186,15 @@ const Routes = () => {
         <h3 className={'mb-3 mt-0 fs-1 w-75 align-self-center'}>
           Редактирование точек маршрута {data?.getTrack.title}
         </h3>
-
-        <button
-          type={'submit'}
-          className={'btn btn-lg bg-warning fw-bold me-4 px-4 my-auto'}
-        >
-          Добавить точку
-        </button>
+        <div className={'d-flex flex-nowrap'}>
+          <button
+            type={'button'}
+            className={'btn btn-lg bg-warning fw-bold me-4 px-4 my-auto'}
+            onClick={handleCreateAxis}
+          >
+            Добавить точку
+          </button>
+        </div>
       </div>
 
       <br />
@@ -163,7 +218,7 @@ const Routes = () => {
               >
                 Имя точки:
               </label>
-              <div className={'col-5'}>
+              <div className={'col-3'}>
                 <input
                   id={`axisTitle${axis.id}`}
                   className={'form-control custom-form'}
@@ -211,6 +266,15 @@ const Routes = () => {
                   }
                   value={markersY[index] ?? axis.axisY ?? ''}
                 />
+              </div>
+              <div className={'col-2'}>
+                <button
+                  type={'button'}
+                  className={'btn bg-danger fw-bold px-2 my-auto ms-3'}
+                  onClick={(event) => handleDeleteAxis(event, axis.id, index)}
+                >
+                  Удалить точку
+                </button>
               </div>
             </div>
           ))}

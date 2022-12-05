@@ -153,6 +153,7 @@ export const GET_OOPT_TRACKS = gql`
         id
         title
         timeInTrack
+        disabled
       }
     }
   }
@@ -164,6 +165,7 @@ export const GET_OOPT_POINTS = gql`
       id
       title
       points {
+        disabled
         id
         title
         description
@@ -186,6 +188,7 @@ export const GET_OOPT_TOWNS = gql`
       towns {
         id
         title
+        disabled
       }
     }
   }
@@ -199,6 +202,7 @@ export const GET_OOPT_MASTERS = gql`
       masters {
         id
         title
+        disabled
       }
     }
   }

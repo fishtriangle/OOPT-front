@@ -1,29 +1,10 @@
 import AdminLayout from '../../../layouts/AdminLayout';
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
-import { UPDATE_ENTERPRISE } from '../../../graphql/mutations/enterprise';
 import { Link, useParams } from 'react-router-dom';
-import { GET_ONE_ENTERPRISE } from '../../../graphql/query/enterprise';
 import Loader from '../../../components/Loader/Loader';
-import { readFile } from '../../../utilities/filesInteractions';
-import {
-  IGetMaster,
-  IGetMasterVars,
-  IGetOOPT,
-  IGetOOPTVars,
-  IGetService,
-  IGetServiceVars,
-  IGetTown,
-  IGetTownVars,
-  IPhoto,
-} from '../../../common/types';
-import { GET_OOPT_DESCRIPTION } from '../../../graphql/query/oopt';
-import styles from '../../Edit.module.scss';
-import Carousel from 'nuka-carousel';
-import { GET_TOWN } from '../../../graphql/query/town';
-import { GET_MASTER } from '../../../graphql/query/master';
+import { IGetService, IGetServiceVars } from '../../../common/types';
 import { GET_SERVICE } from '../../../graphql/query/service';
-import { UPDATE_MASTER } from '../../../graphql/mutations/masters';
 import {
   CREATE_CONTACT,
   DELETE_CONTACT,

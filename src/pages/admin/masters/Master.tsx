@@ -6,7 +6,11 @@ import Loader from '../../../components/Loader/Loader';
 import { IGetMaster, IGetMasterVars } from '../../../common/types';
 import { GET_MASTER } from '../../../graphql/query/master';
 import { UPDATE_MASTER } from '../../../graphql/mutations/masters';
-import { UPDATE_CONTACT } from '../../../graphql/mutations/contact';
+import {
+  CREATE_CONTACT,
+  DELETE_CONTACT,
+  UPDATE_CONTACT,
+} from '../../../graphql/mutations/contact';
 import { Alert } from 'react-bootstrap';
 
 const Master = () => {
@@ -15,6 +19,8 @@ const Master = () => {
 
   const [updateMaster] = useMutation(UPDATE_MASTER);
   const [updateContact] = useMutation(UPDATE_CONTACT);
+  const [createContact] = useMutation(CREATE_CONTACT);
+  const [deleteContact] = useMutation(DELETE_CONTACT);
 
   const [title, setTitle] = useState<string | null>(null);
   const [description, setDescription] = useState<string | null>(null);
@@ -96,12 +102,64 @@ const Master = () => {
           const promises: Promise<any>[] = contactsData.map((data) =>
             updateContact({ variables: { data } })
           );
-          Promise.all(promises);
         }
       })
       .then(() => {
         refetch().catch((e) => console.error(e));
         setAlertSuccess('Изменения успешно внесены');
+        setAlertDanger(null);
+      })
+      .catch((e) => {
+        setAlertSuccess(null);
+        setAlertDanger(JSON.stringify(e.message));
+        console.error(e);
+      });
+  };
+
+  const handleCreateContact = async (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+
+    const modifiedDescription = newContact
+      ? newContact.split('\n').join('&n')
+      : undefined;
+
+    const data = {
+      description: modifiedDescription,
+      parentId: masterId,
+      parent: 'master',
+    };
+
+    createContact({
+      variables: { data },
+    })
+      .then(() => {
+        refetch().catch((e) => console.error(e));
+        setAlertSuccess('Изменения успешно внесены');
+        setAlertDanger(null);
+        setNewContact('');
+      })
+      .catch((e) => {
+        setAlertSuccess(null);
+        setAlertDanger(JSON.stringify(e.message));
+        console.error(e);
+        setNewContact('');
+      });
+  };
+
+  const handleDeleteContact = async (
+    event: React.MouseEvent<HTMLButtonElement>,
+    contactId: number
+  ) => {
+    event.preventDefault();
+
+    deleteContact({
+      variables: { deleteContactId: contactId },
+    })
+      .then(() => {
+        refetch().catch((e) => console.error(e));
+        setAlertSuccess('Контакт удален');
         setAlertDanger(null);
       })
       .catch((e) => {
@@ -120,7 +178,14 @@ const Master = () => {
         Редактирование информации о мастере
       </h3>
       <br />
-      <form className={'w-75 align-self-center'} onSubmit={handleFormSubmit}>
+      <form
+        className={`w-75 align-self-center ${
+          data?.getMaster.contacts &&
+          data?.getMaster.contacts.length > 2 &&
+          'add-scrollbar admin-list-h-l'
+        }`}
+        onSubmit={handleFormSubmit}
+      >
         <div className={'form-group row mb-2'}>
           <label htmlFor={'masterTitle'} className='col-3 col-form-label'>
             Мастер:
@@ -155,7 +220,7 @@ const Master = () => {
         <div className={'form-group row my-2'}>
           {data?.getMaster.contacts &&
             data?.getMaster.contacts.map((contact, index) => (
-              <div className={'col-6 d-flex'} key={contact.id}>
+              <div className={'col-6 d-flex mb-2'} key={contact.id}>
                 <input
                   id={`contactDescription${contact.id}`}
                   className={'form-control custom-form w-70 me-2'}
@@ -171,8 +236,9 @@ const Master = () => {
                   value={contacts[index] ?? contact.description ?? ''}
                 />
                 <button
-                  type={'submit'}
+                  type={'button'}
                   className={'btn btn-outline-warning fw-bold me-4 px-4'}
+                  onClick={(event) => handleDeleteContact(event, contact.id)}
                 >
                   Удалить
                 </button>
@@ -197,7 +263,7 @@ const Master = () => {
               <button
                 type={'button'}
                 className={'btn btn-outline-warning fw-bold me-4 px-4'}
-                onClick={() => console.log(newContact)}
+                onClick={handleCreateContact}
               >
                 Добавить
               </button>

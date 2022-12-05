@@ -239,7 +239,6 @@ const Services: React.FC = () => {
         show={show}
         onHide={() => setShow(false)}
         dialogClassName={'custom-modal'}
-        // width={'lg'}
         centered
       >
         <Modal.Header closeButton>
@@ -257,14 +256,14 @@ const Services: React.FC = () => {
           >
             <div className={'form-group row mb-2'}>
               <label
-                htmlFor={'holidayTitle'}
+                htmlFor={'serviceTitle'}
                 className='text-black fw-bold col-3 col-form-label'
               >
                 Название компании:
               </label>
               <div className={'col-9'}>
                 <input
-                  id={'holidayTitle'}
+                  id={'serviceTitle'}
                   className={'form-control custom-form text-black'}
                   placeholder={'Напишите текст здесь...'}
                   onChange={(event) => handleInputChange(event, setTitle)}
@@ -275,14 +274,14 @@ const Services: React.FC = () => {
 
             <div className={'form-group row mb-2'}>
               <label
-                htmlFor={'holidayDescription'}
+                htmlFor={'serviceDescription'}
                 className='col-3 col-form-label text-black fw-bold'
               >
                 Описание компании:
               </label>
               <div className={'col-9'}>
                 <textarea
-                  id={'holidayDescription'}
+                  id={'serviceDescription'}
                   rows={12}
                   placeholder={'Напишите текст здесь...'}
                   className={
