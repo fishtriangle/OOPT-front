@@ -138,7 +138,6 @@ function App() {
           path={'admin/oopts/:id/holidays/:holidayId/photos'}
           element={<Photos />}
         />
-        {/*  http://localhost:3000/admin/oopts/2/tracks/4/stops*/}
       </Routes>
       {/*<BackgroundMusic />*/}
     </div>

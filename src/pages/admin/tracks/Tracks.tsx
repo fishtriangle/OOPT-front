@@ -12,6 +12,7 @@ import {
   UPDATE_TRACK,
 } from '../../../graphql/mutations/track';
 import { Alert, Modal } from 'react-bootstrap';
+import handleInputChange from '../../../utilities/handlers';
 
 const Tracks: React.FC = () => {
   const navigate = useNavigate();
@@ -54,15 +55,6 @@ const Tracks: React.FC = () => {
         <p>{error.message}</p>
       </>
     );
-
-  const handleInputChange = (
-    event:
-      | React.ChangeEvent<HTMLInputElement>
-      | React.ChangeEvent<HTMLTextAreaElement>,
-    handler: React.Dispatch<React.SetStateAction<string>>
-  ) => {
-    handler(event.target.value);
-  };
 
   const handleCreateTrack = async (
     event:
