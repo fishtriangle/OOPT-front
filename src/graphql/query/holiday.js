@@ -23,3 +23,25 @@ export const GET_HOLIDAY = gql`
     }
   }
 `;
+
+export const GET_HOLIDAY_PHOTOS = gql`
+  query GetOOPT($holidayUniqueInput: HolidayUniqueInput!) {
+    getHoliday(holidayUniqueInput: $holidayUniqueInput) {
+      id
+      photos {
+        id
+        small
+        large
+        description
+        alt
+      }
+      title
+      videos {
+        id
+        path
+        description
+        alt
+      }
+    }
+  }
+`;

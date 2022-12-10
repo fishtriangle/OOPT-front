@@ -18,10 +18,6 @@ export const UPDATE_HOLIDAY = gql`
       disabled
       description
       title
-      contacts {
-        description
-        id
-      }
     }
   }
 `;

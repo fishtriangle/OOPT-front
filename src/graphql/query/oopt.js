@@ -153,6 +153,7 @@ export const GET_OOPT_TRACKS = gql`
         id
         title
         timeInTrack
+        transport
         disabled
       }
     }

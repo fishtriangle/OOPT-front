@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styles from './MainMenu.module.scss';
 import bistrinskiyLogo from './logo-bistrinskiy-yellow.png';
-import arrow from './right-arrow.png';
+import arrow from './arrow.png';
 import { Nav } from 'react-bootstrap';
 import { useAppDispatch } from '../../redux/store';
 import {
@@ -67,7 +67,7 @@ const MainMenu: React.FC = () => {
           activeKey={undefined}
           onSelect={(selectedKey) => handleSelect(selectedKey)}
           className={
-            'd-flex justify-content-center flex-wrap align-items-center'
+            'd-flex justify-content-end w-62 flex-wrap align-items-center'
           }
         >
           {menuItems.map(({ title, id }, index) => (

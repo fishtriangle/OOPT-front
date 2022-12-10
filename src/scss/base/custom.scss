@@ -58,6 +58,10 @@
   height: 80%!important;
 }
 
+.w-62 {
+  width: 62%!important;
+}
+
 .w-70 {
   width: 70%!important;
 }
@@ -79,16 +83,16 @@
   padding-right: 100px;
 
   &::-webkit-scrollbar {
-    width: 40px;
+    width: 60px;
   }
   &::-webkit-scrollbar-track {
-    background-color: #ECECEC;
-    border-radius: 40px;
-    border: 4px #CCCCCC;
+    background-color: #ccc;
+    border-radius: 60px;
   }
   &::-webkit-scrollbar-thumb {
-    background-color: #CCCCCC;
-    border-radius: 20px;
+    background-color: #fff;
+    border-radius: 60px;
+    border: 10px solid #ccc;
   }
 }
 

@@ -18,18 +18,18 @@ type CloseBtnProps = {
 const CloseBtn: React.FC<CloseBtnProps> = ({ closeAction, classNames }) => {
   const dispatch = useAppDispatch();
 
-  // function handleClose() {
-  //   if (!closeAction) {
-  //     dispatch(hideRightBlock());
-  //     setTimeout(() => {
-  //       dispatch(setCurrent({ current: null }));
-  //       dispatch(setIntro());
-  //       dispatch(showRightBlock());
-  //     }, 1500);
-  //   } else {
-  //     closeAction();
-  //   }
-  // }
+  function handleClose() {
+    if (!closeAction) {
+      // // dispatch(hideRightBlock());
+      // setTimeout(() => {
+      //   dispatch(setCurrent({ current: null }));
+      //   dispatch(setIntro());
+      //   dispatch(showRightBlock());
+      // }, 1500);
+    } else {
+      closeAction();
+    }
+  }
 
   return (
     <div>
@@ -37,7 +37,7 @@ const CloseBtn: React.FC<CloseBtnProps> = ({ closeAction, classNames }) => {
         src={closeBtnImg}
         alt={'Close button'}
         className={`align-self-start ${styles.closeBtn} ${classNames}`}
-        // onClick={handleClose}
+        onClick={handleClose}
       />
     </div>
   );

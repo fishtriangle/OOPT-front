@@ -15,7 +15,7 @@ import { useAppDispatch } from '../../redux/store';
 const ImageShow: React.FC = () => {
   const dispatch = useAppDispatch();
 
-  const { images, isImageShown } = useSelector(selectImage);
+  const { images, isImageShown, currentImage } = useSelector(selectImage);
 
   useEffect(() => {
     setTimeout(() => dispatch(showImage()), 0);
@@ -35,6 +35,7 @@ const ImageShow: React.FC = () => {
         }`}
       >
         <Carousel
+          slideIndex={currentImage || 0}
           renderBottomCenterControls={null}
           renderCenterLeftControls={({ previousSlide }) => (
             <svg
@@ -60,10 +61,13 @@ const ImageShow: React.FC = () => {
           {images &&
             images.map(({ large, alt }, index: number) => (
               <img
-                src={large}
+                src={`${
+                  process.env.REACT_APP_API_URL_STATIC ||
+                  'http://localhost:4000/'
+                }${large}`}
                 alt={alt}
                 key={index}
-                width={'1600px'}
+                width={'3400px'}
                 className={'btn border-0 shadow-none'}
               />
             ))}

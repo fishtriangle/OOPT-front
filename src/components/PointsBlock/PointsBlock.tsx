@@ -8,18 +8,11 @@ import {
 } from '../../common/types';
 import { GET_OOPT_POINTS } from '../../graphql/query/oopt';
 import Loader from '../Loader/Loader';
-import styles from './PointsBlock.module.scss';
-import {
-  hideBlock,
-  setBlockType,
-  setCurrentPointId,
-  showBlock,
-} from '../../redux/slices/descriptionBlockSlice';
-import { useAppDispatch } from '../../redux/store';
+import { setCurrentPointId } from '../../redux/slices/descriptionBlockSlice';
+import OOPTItemsList from '../OOPTItemsList/OOPTItemsList';
 
 const PointsBlock: React.FC = () => {
   const ooptIndex = 2;
-  const dispatch = useAppDispatch();
 
   const { data, loading, error } = useQuery<IGetOOPT, IGetOOPTVars>(
     GET_OOPT_POINTS,
@@ -42,40 +35,17 @@ const PointsBlock: React.FC = () => {
       </>
     );
 
-  const handlePointClick = (id: number) => {
-    dispatch(hideBlock());
-    setTimeout(() => {
-      dispatch(setCurrentPointId(id));
-      dispatch(setBlockType(EnumDescriptionBlock.POINT));
-      dispatch(showBlock());
-    }, 1000);
-  };
-
-  const points: IPoint[] | undefined = data?.getOOPT.points;
+  const points: IPoint[] | undefined = data?.getOOPT.points.filter(
+    ({ disabled }) => !disabled
+  );
 
   return (
-    <div className={'text-black w-100'}>
-      <p className={styles.h1}>Достопримечательности</p>
-      <p className={styles.h2}>{data?.getOOPT.title}</p>
-      <br />
-      <div
-        className={`${styles.listBlock} ${
-          points && points?.length > 15 && 'add-scrollbar h-63'
-        }`}
-      >
-        {points
-          ? points.map(({ id, title }) => (
-              <p
-                key={id}
-                className={styles.list}
-                onClick={() => handlePointClick(id)}
-              >
-                {title}
-              </p>
-            ))
-          : undefined}
-      </div>
-    </div>
+    <OOPTItemsList
+      list={points || []}
+      title={'Достопримечательности'}
+      listType={EnumDescriptionBlock.POINT}
+      dispatchFunction={setCurrentPointId}
+    />
   );
 };
 

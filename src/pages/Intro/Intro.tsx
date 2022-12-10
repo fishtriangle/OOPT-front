@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styles from './Intro.module.scss';
 import logo from './oopt-logo-white.png';
-import bistrinskiy from './bistrinskiy.png';
+import bistrinskiy from './bistrinskiy2.png';
 
 import { useNavigate } from 'react-router-dom';
 

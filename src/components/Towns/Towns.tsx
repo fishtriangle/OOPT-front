@@ -8,19 +8,11 @@ import {
 } from '../../common/types';
 import { GET_OOPT_TOWNS } from '../../graphql/query/oopt';
 import Loader from '../Loader/Loader';
-import styles from './Towns.module.scss';
-import {
-  hideBlock,
-  setBlockType,
-  setCurrentPointId,
-  setCurrentTownId,
-  showBlock,
-} from '../../redux/slices/descriptionBlockSlice';
-import { useAppDispatch } from '../../redux/store';
+import OOPTItemsList from '../OOPTItemsList/OOPTItemsList';
+import { setCurrentTownId } from '../../redux/slices/descriptionBlockSlice';
 
 const Towns: React.FC = () => {
   const ooptIndex = 2;
-  const dispatch = useAppDispatch();
 
   const { data, loading, error } = useQuery<IGetOOPT, IGetOOPTVars>(
     GET_OOPT_TOWNS,
@@ -43,40 +35,17 @@ const Towns: React.FC = () => {
       </>
     );
 
-  const handlePointClick = (id: number) => {
-    dispatch(hideBlock());
-    setTimeout(() => {
-      dispatch(setCurrentTownId(id));
-      dispatch(setBlockType(EnumDescriptionBlock.TOWN));
-      dispatch(showBlock());
-    }, 1000);
-  };
-
-  const towns: ITown[] | undefined = data?.getOOPT.towns;
+  const towns: ITown[] | undefined = data?.getOOPT.towns.filter(
+    ({ disabled }) => !disabled
+  );
 
   return (
-    <div className={'text-black w-100'}>
-      <p className={styles.h1}>Населенные пункты</p>
-      <p className={styles.h2}>{data?.getOOPT.title}</p>
-      <br />
-      <div
-        className={`${styles.listBlock} ${
-          towns && towns?.length > 15 && 'add-scrollbar'
-        }`}
-      >
-        {towns
-          ? towns.map(({ id, title }) => (
-              <p
-                key={id}
-                className={styles.list}
-                onClick={() => handlePointClick(id)}
-              >
-                {title}
-              </p>
-            ))
-          : undefined}
-      </div>
-    </div>
+    <OOPTItemsList
+      title={'Населённые пункты'}
+      list={towns || []}
+      listType={EnumDescriptionBlock.TOWN}
+      dispatchFunction={setCurrentTownId}
+    />
   );
 };
 

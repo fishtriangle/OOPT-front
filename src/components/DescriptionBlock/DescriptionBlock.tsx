@@ -2,7 +2,6 @@ import React from 'react';
 import styles from './DescriptonBlock.module.scss';
 import { useSelector } from 'react-redux';
 import {
-  hideBlock,
   selectDescriptionBlockIsHide,
   selectType,
 } from '../../redux/slices/descriptionBlockSlice';
@@ -10,7 +9,7 @@ import AboutOOPT from '../AboutOOPT/AboutOOPT';
 import { useAppDispatch } from '../../redux/store';
 import Tracks from '../Tracks/Tracks';
 import { EnumDescriptionBlock } from '../../common/types';
-import Track from '../Track/Track';
+import { Track } from '../Track/Track';
 import PointsBlock from '../PointsBlock/PointsBlock';
 import Point from '../Point/Point';
 import Towns from '../Towns/Towns';
@@ -21,10 +20,10 @@ import Master from '../Master/Master';
 import Service from '../Service/Service';
 import Holidays from '../Holidays/Holidays';
 import Holiday from '../Holiday/Holiday';
+import CloseNBackBtn from '../CloseNBackBtn/CloseNBackBtn';
 
 const DescriptionBlock: React.FC = () => {
   const isHide = useSelector(selectDescriptionBlockIsHide);
-  const dispatch = useAppDispatch();
 
   const blockType = useSelector(selectType);
 
@@ -44,14 +43,12 @@ const DescriptionBlock: React.FC = () => {
     [EnumDescriptionBlock.HOLIDAY]: <Holiday />,
   };
 
-  const handleClickHide = () => {
-    dispatch(hideBlock());
-  };
-
   return (
     <div className={`${styles.container} ${isHide && styles.container__hide}`}>
-      <div className={styles.point} onClick={handleClickHide} />
-      {blockMap[blockType] ?? null}
+      <CloseNBackBtn />
+      <div className={styles.container_inner}>
+        {blockMap[blockType] ?? null}
+      </div>
     </div>
   );
 };

@@ -5,22 +5,14 @@ import {
   IGetOOPT,
   IGetOOPTVars,
   IHoliday,
-  IMaster,
 } from '../../common/types';
 import { GET_OOPT_HOLIDAYS } from '../../graphql/query/oopt';
 import Loader from '../Loader/Loader';
-import styles from './Holidays.module.scss';
-import {
-  hideBlock,
-  setBlockType,
-  setCurrentHolidayId,
-  showBlock,
-} from '../../redux/slices/descriptionBlockSlice';
-import { useAppDispatch } from '../../redux/store';
+import { setCurrentHolidayId } from '../../redux/slices/descriptionBlockSlice';
+import OOPTItemsList from '../OOPTItemsList/OOPTItemsList';
 
 const Holidays: React.FC = () => {
   const ooptIndex = 2;
-  const dispatch = useAppDispatch();
 
   const { data, loading, error } = useQuery<IGetOOPT, IGetOOPTVars>(
     GET_OOPT_HOLIDAYS,
@@ -43,40 +35,17 @@ const Holidays: React.FC = () => {
       </>
     );
 
-  const handlePointClick = (id: number) => {
-    dispatch(hideBlock());
-    setTimeout(() => {
-      dispatch(setCurrentHolidayId(id));
-      dispatch(setBlockType(EnumDescriptionBlock.HOLIDAY));
-      dispatch(showBlock());
-    }, 1000);
-  };
-
-  const holidays: IHoliday[] | undefined = data?.getOOPT.holidays;
+  const holidays: IHoliday[] | undefined = data?.getOOPT.holidays.filter(
+    ({ disabled }) => !disabled
+  );
 
   return (
-    <div className={'text-black w-100'}>
-      <p className={styles.h1}>Национальные праздники</p>
-      <p className={styles.h2}>{data?.getOOPT.title}</p>
-      <br />
-      <div
-        className={`${styles.listBlock} ${
-          holidays && holidays?.length > 15 && 'add-scrollbar'
-        }`}
-      >
-        {holidays
-          ? holidays.map(({ id, title }) => (
-              <p
-                key={id}
-                className={styles.list}
-                onClick={() => handlePointClick(id)}
-              >
-                {title}
-              </p>
-            ))
-          : undefined}
-      </div>
-    </div>
+    <OOPTItemsList
+      title={'Праздники'}
+      list={holidays || []}
+      listType={EnumDescriptionBlock.HOLIDAY}
+      dispatchFunction={setCurrentHolidayId}
+    />
   );
 };
 

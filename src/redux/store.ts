@@ -1,16 +1,18 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore, current } from '@reduxjs/toolkit';
 import descriptionBlock from './slices/descriptionBlockSlice';
-import currentSlice from './slices/currentSlice';
 import fullScreenImage from './slices/fullScreenImageSlice';
 import vacancies from './slices/vacanciesSlice';
 import { useDispatch } from 'react-redux';
+import backActionSlice from './slices/backActionSlice';
+import currentSlice from './slices/currentSlice';
 
 export const store = configureStore({
   reducer: {
     descriptionBlock,
-    currentSlice,
+    backActionSlice,
     fullScreenImage,
     vacancies,
+    currentSlice,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
 });

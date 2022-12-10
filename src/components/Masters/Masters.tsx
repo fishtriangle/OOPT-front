@@ -8,18 +8,11 @@ import {
 } from '../../common/types';
 import { GET_OOPT_MASTERS } from '../../graphql/query/oopt';
 import Loader from '../Loader/Loader';
-import styles from './Masters.module.scss';
-import {
-  hideBlock,
-  setBlockType,
-  setCurrentMasterId,
-  showBlock,
-} from '../../redux/slices/descriptionBlockSlice';
-import { useAppDispatch } from '../../redux/store';
+import OOPTItemsList from '../OOPTItemsList/OOPTItemsList';
+import { setCurrentMasterId } from '../../redux/slices/descriptionBlockSlice';
 
 const Masters: React.FC = () => {
   const ooptIndex = 2;
-  const dispatch = useAppDispatch();
 
   const { data, loading, error } = useQuery<IGetOOPT, IGetOOPTVars>(
     GET_OOPT_MASTERS,
@@ -42,40 +35,17 @@ const Masters: React.FC = () => {
       </>
     );
 
-  const handlePointClick = (id: number) => {
-    dispatch(hideBlock());
-    setTimeout(() => {
-      dispatch(setCurrentMasterId(id));
-      dispatch(setBlockType(EnumDescriptionBlock.MASTER));
-      dispatch(showBlock());
-    }, 1000);
-  };
-
-  const masters: IMaster[] | undefined = data?.getOOPT.masters;
+  const masters: IMaster[] | undefined = data?.getOOPT.masters.filter(
+    ({ disabled }) => !disabled
+  );
 
   return (
-    <div className={'text-black w-100'}>
-      <p className={styles.h1}>Мастера традиционных ремесел</p>
-      <p className={styles.h2}>{data?.getOOPT.title}</p>
-      <br />
-      <div
-        className={`${styles.listBlock} ${
-          masters && masters?.length > 15 && 'add-scrollbar'
-        }`}
-      >
-        {masters
-          ? masters.map(({ id, title }) => (
-              <p
-                key={id}
-                className={styles.list}
-                onClick={() => handlePointClick(id)}
-              >
-                {title}
-              </p>
-            ))
-          : undefined}
-      </div>
-    </div>
+    <OOPTItemsList
+      title={'Мастера'}
+      list={masters || []}
+      listType={EnumDescriptionBlock.MASTER}
+      dispatchFunction={setCurrentMasterId}
+    />
   );
 };
 

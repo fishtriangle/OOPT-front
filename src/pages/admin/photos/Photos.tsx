@@ -4,6 +4,8 @@ import { useMutation, useQuery } from '@apollo/client';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import Loader from '../../../components/Loader/Loader';
 import {
+  IGetHoliday,
+  IGetHolidayVars,
   IGetMaster,
   IGetMasterVars,
   IGetOOPT,
@@ -16,6 +18,7 @@ import {
   IGetTownVars,
   IGetTrack,
   IGetTrackVars,
+  IHoliday,
   IMaster,
   IOOPT,
   IPhoto,
@@ -40,6 +43,7 @@ import handleInputChange from '../../../utilities/handlers';
 import { Alert } from 'react-bootstrap';
 import _ from 'lodash';
 import { DELETE_PHOTO } from '../../../graphql/mutations/photo';
+import { GET_HOLIDAY_PHOTOS } from '../../../graphql/query/holiday';
 
 const Photos = () => {
   const id = Number(useParams().id);
@@ -48,6 +52,7 @@ const Photos = () => {
   const trackId = Number(useParams().trackId);
   const masterId = Number(useParams().masterId);
   const serviceId = Number(useParams().serviceId);
+  const holidayId = Number(useParams().holidayId);
 
   const backLocation = useLocation().pathname.split('/').slice(0, -2).join('/');
 
@@ -67,6 +72,7 @@ const Photos = () => {
     | ITrack
     | IMaster
     | IService
+    | IHoliday
     | undefined;
 
   let customRefetch: () => any | undefined;
@@ -188,6 +194,29 @@ const Photos = () => {
         </>
       );
     loadedData = data?.getService;
+  } else if (holidayId) {
+    const { data, loading, error, refetch } = useQuery<
+      IGetHoliday,
+      IGetHolidayVars
+    >(GET_HOLIDAY_PHOTOS, {
+      variables: {
+        pollInterval: 3000,
+        holidayUniqueInput: { id: holidayId },
+      },
+    });
+    customRefetch = refetch;
+
+    if (loading) return <Loader />;
+    if (error)
+      return (
+        <>
+          <p className={'text-center text-black'}>
+            Ошибка загрузки фотографий...
+          </p>
+          <p>{error.message}</p>
+        </>
+      );
+    loadedData = data?.getHoliday;
   } else {
     const { data, loading, error, refetch } = useQuery<IGetOOPT, IGetOOPTVars>(
       GET_OOPT_PHOTOS,
@@ -243,6 +272,9 @@ const Photos = () => {
       } else if (serviceId) {
         dataParent = 'service';
         dataParentId = `${serviceId}`;
+      } else if (holidayId) {
+        dataParent = 'holiday';
+        dataParentId = `${holidayId}`;
       } else {
         dataParent = 'oopt';
         dataParentId = `${id}`;
@@ -412,7 +444,7 @@ const Photos = () => {
           <fieldset className={'form-group row'}>
             <legend>Удаление фотографий</legend>
             <div
-              className={`col-9 my-0 mx-0 align-self-center ${styles.editPage_carouselContainer}`}
+              className={`col-10 my-0 mx-0 align-self-center ${styles.editPage_carouselContainer}`}
             >
               {photos && photos.length > 5 ? (
                 <Carousel
@@ -477,7 +509,7 @@ const Photos = () => {
                 )
               )}
             </div>
-            <div className='col-3'>
+            <div className='col-2'>
               <button
                 type='button'
                 className='btn btn-sm bg-warning px-5 text-black fw-bold mt-4 ms-5'

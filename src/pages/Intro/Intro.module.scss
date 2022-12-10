@@ -1,4 +1,4 @@
 .background {
   background: rgb(0,0,0);
-  background: linear-gradient(180deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.7) 0%), url("../../../public/intro-back.png");
+  background: center no-repeat url("./background.png"), linear-gradient(180deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.7) 0%), url("../../../public/intro-back.png");
 }

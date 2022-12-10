@@ -5,11 +5,11 @@
   right: 0;
   height: 400px;
   background-color: black;
-  padding: 110px 400px;
+  padding: 90px 90px 90px 110px;
   transition: transform 0.4s;
 }
 .container__hide {
-  transform: translateY(-300px);
+  transform: translateY(-350px);
 }
 
 .nav {
@@ -25,19 +25,17 @@
 }
 
 .hideBtn {
-  width: 180px;
-  height: 180px;
-  background-color: #D9DF72;
-  padding: 30px;
-  border-radius: 180px;
-  transform: rotate(-90deg);
+  width: 80px;
+  height: 80px;
+  padding: 0;
+  transform: rotate(0deg);
   position: absolute;
-  bottom: -90px;
+  bottom: -40px;
   right: 300px;
   transition: transform 0.3s;
 }
 .hideBtn__pressed {
-  transform: rotate(90deg);
+  transform: rotate(180deg);
 }
 
 /*# sourceMappingURL=MainMenu.module.css.map */

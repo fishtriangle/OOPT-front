@@ -1,27 +1,22 @@
 import React from 'react';
 import { useQuery } from '@apollo/client';
-import {
-  EnumDescriptionBlock,
-  IGetTrack,
-  IGetTrackVars,
-} from '../../common/types';
+import { IGetTrack, IGetTrackVars } from '../../common/types';
 import Loader from '../Loader/Loader';
-import styles from './Track.module.scss';
 import Text from '../Text/Text';
-import Carousel from 'nuka-carousel';
 import { GET_TRACK } from '../../graphql/query/track';
 import { useSelector } from 'react-redux';
-import {
-  hideBlock,
-  selectCurrentTrackId,
-  setBlockType,
-  showBlock,
-} from '../../redux/slices/descriptionBlockSlice';
-import { useAppDispatch } from '../../redux/store';
+import { selectCurrentTrackId } from '../../redux/slices/descriptionBlockSlice';
+import OOPTItem from '../OOPTItem/OOPTItem';
+import pointImg from './point.png';
+import calendarImg from './calendar.png';
+import baggageImg from './baggage.png';
+import distanceImg from './distance.png';
+import houseImg from './house.png';
+import timerImg from './timer.png';
+import { TrackIcons } from '../TrackIcons/TrackIcons';
 
-const Track: React.FC = () => {
+export const Track: React.FC = () => {
   const trackId = useSelector(selectCurrentTrackId);
-  const dispatch = useAppDispatch();
 
   const { data, loading, error } = useQuery<IGetTrack, IGetTrackVars>(
     GET_TRACK,
@@ -32,14 +27,6 @@ const Track: React.FC = () => {
       },
     }
   );
-
-  const handleBackClick = () => {
-    dispatch(hideBlock());
-    setTimeout(() => {
-      dispatch(setBlockType(EnumDescriptionBlock.TRACKS));
-      dispatch(showBlock());
-    }, 1000);
-  };
 
   if (loading) return <Loader />;
   if (error)
@@ -55,103 +42,61 @@ const Track: React.FC = () => {
   const photos = data?.getTrack.photos;
 
   return (
-    <div className={'text-black'}>
-      <div className={'d-flex flex-nowrap justify-content-between'}>
-        <div className={styles.h1}>
-          <p className={styles.h1}>{data?.getTrack.title}</p>
+    <OOPTItem title={data?.getTrack.title || ''} photos={photos}>
+      <Text>{data?.getTrack.description}</Text>
+      <div className={'row'}>
+        <div className={'col-5'}>
+          <div className={'d-flex flex-column mt-3'}>
+            <img src={pointImg} alt={''} width={60} height={60} />
+            <p className={'fw-bold m-0'}>Тип маршрута</p>
+            <p className={'m-0'}>{data?.getTrack.type}</p>
+          </div>
+          <div className={'d-flex flex-column mt-3'}>
+            <img src={distanceImg} alt={''} width={60} height={60} />
+            <p className={'fw-bold m-0'}>Протяженность</p>
+            <p className={'m-0'}>{data?.getTrack.length}</p>
+          </div>
+          <div className={'d-flex flex-column mt-3'}>
+            <div>
+              <TrackIcons
+                trackTransport={data?.getTrack.transport || ''}
+                iconsSize={60}
+              />
+            </div>
+            <p className={'fw-bold m-0'}>Способ передвижения</p>
+            <p className={'m-0'}>{data?.getTrack.transport}</p>
+          </div>
+          <div className={'d-flex flex-column mt-3'}>
+            <img src={timerImg} alt={''} width={60} height={60} />
+            <p className={'fw-bold m-0'}>
+              Предполагаемое время прохождения маршрута
+            </p>
+            <p className={'m-0'}>{data?.getTrack.length}</p>
+          </div>
         </div>
-        <p className={styles.back} onClick={handleBackClick}>
-          К списку маршрутов
-        </p>
+        <div className={'col-1'} />
+        <div className={'col-5 '}>
+          <div className={'d-flex flex-column mt-3'}>
+            <img src={calendarImg} alt={''} width={60} height={60} />
+            <p className={'fw-bold m-0'}>Сезонность</p>
+            <p className={'m-0'}>{data?.getTrack.season}</p>
+          </div>
+          <div className={'d-flex flex-column mt-3'}>
+            <img src={baggageImg} alt={''} width={60} height={60} />
+            <p className={'fw-bold m-0'}>Источники питьевой воды</p>
+            <p className={'m-0'}>{data?.getTrack.water}</p>
+          </div>
+          <div className={'d-flex flex-column mt-3'}>
+            <img src={houseImg} alt={''} width={60} height={60} />
+            <p className={'fw-bold m-0'}>Места стоянок</p>
+            <p className={'m-0'}>
+              {data && data.getTrack.stops.length > 0
+                ? data?.getTrack.stops.map(({ title }) => title).join(', ')
+                : 'отсутствуют'}
+            </p>
+          </div>
+        </div>
       </div>
-
-      <br />
-      <div
-        className={`${styles.text} ${
-          !photos || photos.length === 0
-            ? styles.text__long
-            : styles.text__short
-        } add-scrollbar`}
-      >
-        <Text>{data?.getTrack.description}</Text>
-        <br />
-        <p>
-          <b>Тип маршрута – </b>
-          {data?.getTrack.type}
-        </p>
-        <p>
-          <b>Протяженность – </b>
-          {data?.getTrack.length}
-        </p>
-        <p>
-          <b>Способ передвижения – </b>
-          {data?.getTrack.transport}
-        </p>
-        <p>
-          <b>Предполагаемое время прохождения маршрута – </b>
-          {data?.getTrack.timeInTrack}
-        </p>
-        <p>
-          <b>Сезонность –</b>
-          {data?.getTrack.season}
-        </p>
-        <p>
-          <b>Источники питьевой воды – </b>
-          {data?.getTrack.water}
-        </p>
-        <p>
-          <b>Места стоянок – </b>
-          {data && data.getTrack.stops.length > 0
-            ? data?.getTrack.stops.map(({ title }) => title).join(', ')
-            : 'отсутствуют'}
-        </p>
-      </div>
-      <div className={'mb-5 mx-3 w-90 align-self-center'}>
-        {photos && photos.length > 0 && (
-          <Carousel
-            className={`mt-2`}
-            renderCenterLeftControls={null}
-            renderCenterRightControls={null}
-            wrapAround={true}
-            slidesToShow={4}
-            defaultControlsConfig={{
-              pagingDotsClassName: styles.enterpriseBlock_carouselDots,
-              pagingDotsContainerClassName:
-                styles.enterpriseBlock_carouselContainer,
-            }}
-          >
-            {photos.map(
-              ({
-                id,
-                small,
-                alt,
-              }: {
-                id: number;
-                small?: string;
-                alt?: string;
-              }) => (
-                <img
-                  src={small}
-                  alt={alt}
-                  key={id}
-                  width={'200px'}
-                  // onClick={() =>
-                  //   dispatch(
-                  //     setImages({
-                  //       images: data?.getEnterprise.photos,
-                  //       currentImage: id,
-                  //     })
-                  //   )
-                  // }
-                  className={'btn border-0 shadow-none'}
-                />
-              )
-            )}
-          </Carousel>
-        )}
-      </div>
-    </div>
+    </OOPTItem>
   );
 };
-
-export default Track;

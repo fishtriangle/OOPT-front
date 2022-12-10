@@ -8,19 +8,11 @@ import {
 } from '../../common/types';
 import { GET_OOPT_SERVICES } from '../../graphql/query/oopt';
 import Loader from '../Loader/Loader';
-import styles from './Services.module.scss';
-import {
-  hideBlock,
-  setBlockType,
-  setCurrentPointId,
-  setCurrentServiceId,
-  showBlock,
-} from '../../redux/slices/descriptionBlockSlice';
-import { useAppDispatch } from '../../redux/store';
+import OOPTItemsList from '../OOPTItemsList/OOPTItemsList';
+import { setCurrentServiceId } from '../../redux/slices/descriptionBlockSlice';
 
 const Services: React.FC = () => {
   const ooptIndex = 2;
-  const dispatch = useAppDispatch();
 
   const { data, loading, error } = useQuery<IGetOOPT, IGetOOPTVars>(
     GET_OOPT_SERVICES,
@@ -43,40 +35,17 @@ const Services: React.FC = () => {
       </>
     );
 
-  const handlePointClick = (id: number) => {
-    dispatch(hideBlock());
-    setTimeout(() => {
-      dispatch(setCurrentServiceId(id));
-      dispatch(setBlockType(EnumDescriptionBlock.SERVICE_ITEM));
-      dispatch(showBlock());
-    }, 1000);
-  };
-
-  const services: IService[] | undefined = data?.getOOPT.services;
+  const services: IService[] | undefined = data?.getOOPT.services.filter(
+    ({ disabled }) => !disabled
+  );
 
   return (
-    <div className={'text-black w-100'}>
-      <p className={styles.h1}>Туристические сервисные компании</p>
-      <p className={styles.h2}>{data?.getOOPT.title}</p>
-      <br />
-      <div
-        className={`${styles.listBlock} ${
-          services && services?.length > 15 && 'add-scrollbar'
-        }`}
-      >
-        {services
-          ? services.map(({ id, title }) => (
-              <p
-                key={id}
-                className={styles.list}
-                onClick={() => handlePointClick(id)}
-              >
-                {title}
-              </p>
-            ))
-          : undefined}
-      </div>
-    </div>
+    <OOPTItemsList
+      title={'Туристические компании'}
+      list={services || []}
+      listType={EnumDescriptionBlock.SERVICE_ITEM}
+      dispatchFunction={setCurrentServiceId}
+    />
   );
 };
 

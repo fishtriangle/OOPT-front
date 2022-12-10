@@ -1,0 +1,51 @@
+.h1 {
+  font-weight: 1000;
+  font-size: 64px;
+  line-height: 64px;
+  margin-bottom: 100px;
+}
+
+.text {
+  font-weight: normal;
+  font-size: 40px;
+  position: relative;
+
+  &__long {
+    max-height: 1200px;
+  }
+
+  &__short {
+    max-height: 900px;
+  }
+}
+
+.fader {
+  position: absolute;
+  bottom: -1px;
+  width: 92%;
+  height: 400px;
+  background: linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(0,0,0,0) 100%);
+  transition: opacity 0.2s;
+
+  &__show {
+    opacity: 0;
+  }
+
+  &__hide {
+    opacity: 1;
+  }
+}
+
+.carousel {
+  width: 1350px;
+  margin-top: 50px;
+  margin-bottom: 50px;
+
+  &_toLeft {
+    transform: rotate(0deg) translateX(-150px);
+  }
+
+  &_toRight {
+    transform: rotate(180deg) translateX(-107px);
+  }
+}
