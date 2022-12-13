@@ -199,7 +199,11 @@ const Point = () => {
               className={`form-control custom-form ${invalidY && 'is-invalid'}`}
               placeholder={'Y'}
               onChange={(event) => handelInputChange(event, setMarkerY)}
-              value={markerY ?? data?.getPoint.axis[0].axisY ?? ''}
+              value={
+                markerY ??
+                (data?.getPoint.axis[0] && data?.getPoint.axis[0].axisY) ??
+                ''
+              }
             />
           </div>
           <div className={'col-1'}></div>
@@ -210,7 +214,11 @@ const Point = () => {
               className={`form-control custom-form ${invalidX && 'is-invalid'}`}
               placeholder={'X'}
               onChange={(event) => handelInputChange(event, setMarkerX)}
-              value={markerX ?? data?.getPoint.axis[0].axisX ?? ''}
+              value={
+                markerX ??
+                (data?.getPoint.axis[0] && data?.getPoint.axis[0].axisX) ??
+                ''
+              }
             />
           </div>
         </div>

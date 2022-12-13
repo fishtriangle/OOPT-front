@@ -148,7 +148,7 @@ const Points: React.FC = () => {
       description: modifiedDescription,
       route: modifiedRoute,
       parent: townId ? 'town' : trackId ? 'track' : 'oopt',
-      parentId: ooptId,
+      parentId: townId ? townId : trackId ? trackId : ooptId,
     };
 
     createPoint({
@@ -334,7 +334,7 @@ const Points: React.FC = () => {
         <Modal.Header closeButton>
           <Modal.Title>
             <span className={'text-black fw-bold m-auto ms-5'}>
-              Добавить компанию
+              Добавить достопримечательность
             </span>
           </Modal.Title>
         </Modal.Header>
@@ -349,7 +349,7 @@ const Points: React.FC = () => {
                 htmlFor={'pointTitle'}
                 className='text-black fw-bold col-3 col-form-label'
               >
-                Название компании:
+                Название:
               </label>
               <div className={'col-9'}>
                 <input
@@ -367,7 +367,7 @@ const Points: React.FC = () => {
                 htmlFor={'pointDescription'}
                 className='col-3 col-form-label text-black fw-bold'
               >
-                Описание компании:
+                Описание:
               </label>
               <div className={'col-9'}>
                 <textarea

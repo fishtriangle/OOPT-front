@@ -12,6 +12,9 @@ import {
   showBlock,
 } from '../../redux/slices/descriptionBlockSlice';
 import { useAppDispatch } from '../../redux/store';
+import { setCurrentLabel } from '../../redux/slices/currentLabelSlice';
+import { createLayerData, createViewData } from '../Map/utilities';
+import { setCurrentViewState } from '../../redux/slices/currentViewStateSlice';
 
 type Props = {
   list: IPoint[] | IMaster[] | IHoliday[];
@@ -27,14 +30,24 @@ const List: React.FC<Props> = ({
   onClick,
 }) => {
   const dispatch = useAppDispatch();
-  const handleClick = (id: number) => {
+  const handleClick = (item: IPoint | IMaster | IHoliday) => {
+    console.log(item);
+
+    if ('axis' in item) {
+      const iconData = createLayerData(item);
+      const viewData = createViewData(item);
+
+      iconData && dispatch(setCurrentLabel(iconData));
+      dispatch(setCurrentViewState(viewData));
+    }
+
     if (dispatchFunction) {
       dispatch(hideBlock());
       setTimeout(() => {
         if (onClick) {
           onClick();
         }
-        dispatch(dispatchFunction(id));
+        dispatch(dispatchFunction(item.id));
         dispatch(setBlockType(listType));
         dispatch(showBlock());
       }, 1000);
@@ -44,10 +57,10 @@ const List: React.FC<Props> = ({
   return (
     <div className={`${styles.listBlock}`}>
       <div className={`row ${list.length > 28 && 'add-scrollbar h-63'}`}>
-        {list.map(({ id, title }) => (
-          <div className={'col-6 mt-3'} key={id}>
-            <p className={styles.list} onClick={() => handleClick(id)}>
-              {title}
+        {list.map((item) => (
+          <div className={'col-6 mt-3'} key={item.id}>
+            <p className={styles.list} onClick={() => handleClick(item)}>
+              {item.title}
             </p>
           </div>
         ))}

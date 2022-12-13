@@ -5,6 +5,7 @@ import {
   selectType,
   setBlockType,
   setCurrentTownId,
+  setCurrentTrackId,
   showBlock,
 } from '../../redux/slices/descriptionBlockSlice';
 import { useAppDispatch } from '../../redux/store';
@@ -51,6 +52,7 @@ const CloseNBackBtn: React.FC = () => {
         dispatch(setBlockType(customAction.type));
         dispatch(setBackAction(null));
         dispatch(showBlock());
+        dispatch(setCurrentTrackId(0));
       }, 1000);
       dispatch(setBackAction(null));
     } else {
@@ -58,6 +60,7 @@ const CloseNBackBtn: React.FC = () => {
       setTimeout(() => {
         if (backMap[blockType]) {
           dispatch(setBlockType(backMap[blockType]));
+          dispatch(setCurrentTrackId(0));
           dispatch(showBlock());
         }
       }, 1000);

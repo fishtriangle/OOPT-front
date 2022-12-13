@@ -5,6 +5,8 @@ import vacancies from './slices/vacanciesSlice';
 import { useDispatch } from 'react-redux';
 import backActionSlice from './slices/backActionSlice';
 import currentSlice from './slices/currentSlice';
+import currentLabelSlice from './slices/currentLabelSlice';
+import currentViewStateSlice from './slices/currentViewStateSlice';
 
 export const store = configureStore({
   reducer: {
@@ -13,6 +15,8 @@ export const store = configureStore({
     fullScreenImage,
     vacancies,
     currentSlice,
+    currentLabelSlice,
+    currentViewStateSlice,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
 });

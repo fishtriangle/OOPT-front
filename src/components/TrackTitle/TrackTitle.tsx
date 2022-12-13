@@ -6,27 +6,29 @@ import {
   setCurrentTrackId,
   showBlock,
 } from '../../redux/slices/descriptionBlockSlice';
-import { EnumDescriptionBlock } from '../../common/types';
+import { EnumDescriptionBlock, ITrack } from '../../common/types';
 import { useAppDispatch } from '../../redux/store';
 import { TrackIcons } from '../TrackIcons/TrackIcons';
+import { createTrackViewData } from '../Map/utilities';
+import { setCurrentViewState } from '../../redux/slices/currentViewStateSlice';
 
 interface ITrackTitleProps {
-  trackId: number;
-  trackTitle: string;
-  trackTransport: string;
+  track: ITrack;
 }
 
-export const TrackTitle: React.FC<ITrackTitleProps> = ({
-  trackId,
-  trackTitle,
-  trackTransport,
-}) => {
+export const TrackTitle: React.FC<ITrackTitleProps> = ({ track }) => {
   const dispatch = useAppDispatch();
 
-  const handleTrackClick = (id: number) => {
+  const handleTrackClick = (track: ITrack) => {
+    // const iconData = createLayerData(item);
+    const viewData = createTrackViewData(track);
+
+    // iconData && dispatch(setCurrentLabel(iconData));
+    dispatch(setCurrentViewState(viewData));
+
     dispatch(hideBlock());
     setTimeout(() => {
-      dispatch(setCurrentTrackId(id));
+      dispatch(setCurrentTrackId(track.id));
       dispatch(setBlockType(EnumDescriptionBlock.TRACK));
       dispatch(showBlock());
     }, 1000);
@@ -34,10 +36,10 @@ export const TrackTitle: React.FC<ITrackTitleProps> = ({
 
   return (
     <div className={styles.container}>
-      <TrackIcons trackTransport={trackTransport} />
+      <TrackIcons trackTransport={track.transport || ''} />
       <div className={styles.emptyDiv} />
-      <p className={styles.list} onClick={() => handleTrackClick(trackId)}>
-        {trackTitle}
+      <p className={styles.list} onClick={() => handleTrackClick(track)}>
+        {track.title}
       </p>
     </div>
   );

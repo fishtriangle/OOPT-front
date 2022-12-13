@@ -248,3 +248,20 @@ export enum EnumDescriptionBlock {
   HOLIDAYS = 'holidays',
   HOLIDAY = 'holiday',
 }
+
+export interface IMark {
+  index?: number;
+  coordinates: [number, number];
+  height?: string;
+  marker: string;
+  name?: string;
+}
+
+export interface IViewState {
+  longitude?: number;
+  latitude?: number;
+  zoom: number;
+  minZoom?: number;
+  maxZoom?: number;
+  transitionDuration?: number;
+}

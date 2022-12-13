@@ -16,7 +16,7 @@ interface IDescriptionBlockSliceState {
 const initialState: IDescriptionBlockSliceState = {
   isHide: true,
   blockType: EnumDescriptionBlock.ABOUT,
-  currentTrackId: 4,
+  currentTrackId: 0,
   currentPointId: 1,
   currentTownId: 1,
   currentMasterId: 1,

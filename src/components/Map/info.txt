@@ -1,0 +1,347 @@
+const townsData = [
+  {
+    name: 'с.Эссо',
+    coordinates: [158.700986, 55.918538],
+    marker: 'office',
+  },
+  {
+    name: 'с.Анавгай',
+    coordinates: [158.968909, 56.049678],
+    marker: 'building',
+  },
+];
+
+const volcanoData = [
+  {
+    name: 'г.Тарбаган',
+    height: '1401 м',
+    coordinates: [158.02574, 56.474305],
+    marker: 'sleepingVolcano',
+  },
+  {
+    name: 'влк.Будули',
+    height: '1428 м',
+    coordinates: [158.690637, 56.388294],
+    marker: 'sleepingVolcano',
+  },
+  {
+    name: 'влк.Анаун',
+    height: '1902 м',
+    coordinates: [158.84452, 56.299655],
+    marker: 'sleepingVolcano',
+  },
+  {
+    name: 'г.Чемпура',
+    height: '1417 м',
+    coordinates: [159.1482, 56.233026],
+    marker: 'sleepingVolcano',
+  },
+  {
+    name: 'влк.Уксичан',
+    height: '1700 м',
+    coordinates: [158.385584, 56.064842],
+    marker: 'sleepingVolcano',
+  },
+  {
+    name: 'влк.Эбев-Бунаня',
+    height: '1527 м',
+    coordinates: [158.438284, 55.938885],
+    marker: 'sleepingVolcano',
+  },
+  {
+    name: 'г.Дыгерен-Оленгенде',
+    height: '1950 м',
+    coordinates: [158.819584, 55.8443],
+    marker: 'sleepingVolcano',
+  },
+  {
+    name: 'влк.Южный Черпук',
+    height: '1771 м',
+    coordinates: [157.466697, 55.549442],
+    marker: 'sleepingVolcano',
+  },
+  {
+    name: 'влк.Ичинский',
+    height: '3604 м',
+    coordinates: [157.71, 55.671556],
+    marker: 'activeVolcano',
+  },
+];
+
+const springsData = [
+  {
+    name: 'Апапельские термальные источники',
+    coordinates: [159.246089, 56.312056],
+    marker: 'thermalSpring',
+  },
+  {
+    name: 'Оксинские термальные источники',
+    coordinates: [159.183056, 56.278389],
+    marker: 'thermalSpring',
+  },
+  {
+    name: '',
+    coordinates: [159.088852, 56.017178],
+    marker: 'thermalSpring',
+  },
+  {
+    name: 'Уксичанские термальные источники',
+    coordinates: [158.678735, 55.912204],
+    marker: 'thermalSpring',
+  },
+  {
+    name: 'Козыревские термальные источники',
+    coordinates: [158.765833, 55.648022],
+    marker: 'thermalSpring',
+  },
+];
+
+const trackPioneerHillData = [
+  {
+    from: {
+      coordinates: [158.700986, 55.918538],
+    },
+    to: {
+      coordinates: [158.69275, 55.923293],
+    },
+  },
+  {
+    from: {
+      coordinates: [158.69275, 55.923293],
+    },
+    to: {
+      coordinates: [158.686227, 55.928147],
+    },
+  },
+  {
+    from: {
+      coordinates: [158.686227, 55.928147],
+    },
+    to: {
+      coordinates: [158.687527, 55.929147],
+    },
+  },
+  {
+    from: {
+      coordinates: [158.687527, 55.929147],
+    },
+    to: {
+      coordinates: [158.685327, 55.929],
+    },
+  },
+];
+const pointsPioneerHillData = [
+  {
+    name: 'Беседка на вершине г.Пионерская',
+    coordinates: [158.685327, 55.929],
+    marker: 'campfire',
+  },
+];
+
+
+const trackWhiteRocksData = [
+  {
+    from: {
+      coordinates: [158.700986, 55.918538],
+    },
+    to: {
+      coordinates: [158.69275, 55.923293],
+    },
+  },
+  {
+    from: {
+      coordinates: [158.69275, 55.923293],
+    },
+    to: {
+      coordinates: [158.68075, 55.921293],
+    },
+  },
+  {
+    from: {
+      coordinates: [158.68075, 55.921293],
+    },
+    to: {
+      coordinates: [158.65075, 55.928293],
+    },
+  },
+  {
+    from: {
+      coordinates: [158.65075, 55.928293],
+    },
+    to: {
+      coordinates: [158.61175, 55.938293],
+    },
+  },
+  {
+    from: {
+      coordinates: [158.61175, 55.938293],
+    },
+    to: {
+      coordinates: [158.60675, 55.938293],
+    },
+  },
+  {
+    from: {
+      coordinates: [158.60675, 55.938293],
+    },
+    to: {
+      coordinates: [158.60375, 55.947293],
+    },
+  },
+];
+const pointsWhiteRocksData = [
+  {
+    name: 'проезд для внедорожника',
+    coordinates: [158.61175, 55.938293],
+    marker: 'heavyWay',
+  },
+  {
+    name: 'Беседка',
+    coordinates: [158.60375, 55.947293],
+    marker: 'campfire',
+  },
+];
+
+
+const trackTupikinKeyData = [
+  {
+    from: {
+      coordinates: [158.726986, 55.915038],
+    },
+    to: {
+      coordinates: [158.719086, 55.904238],
+    },
+  },
+  {
+    from: {
+      coordinates: [158.719086, 55.904238],
+    },
+    to: {
+      coordinates: [158.723086, 55.902238],
+    },
+  },
+  {
+    from: {
+      coordinates: [158.723086, 55.902238],
+    },
+    to: {
+      coordinates: [158.734086, 55.901838],
+    },
+  },
+  {
+    from: {
+      coordinates: [158.734086, 55.901838],
+    },
+    to: {
+      coordinates: [158.738086, 55.904838],
+    },
+  },
+  {
+    from: {
+      coordinates: [158.738086, 55.904838],
+    },
+    to: {
+      coordinates: [158.744078, 55.9085],
+    },
+  },
+  {
+    from: {
+      coordinates: [158.744078, 55.9085],
+    },
+    to: {
+      coordinates: [158.738086, 55.904838],
+    },
+  },
+  {
+    from: {
+      coordinates: [158.736086, 55.909838],
+    },
+    to: {
+      coordinates: [158.726986, 55.915038],
+    },
+  },
+];
+const pointsTupikinKeyData = [
+  {
+    name: 'беседка Начальная',
+    coordinates: [158.726986, 55.915038],
+    marker: 'campfire',
+  },
+  {
+    name: 'беседка Тупикин ключ',
+    coordinates: [158.744078, 55.9085],
+    marker: 'campfire',
+  },
+];
+
+
+const trackCheremshankaData = [
+  {
+    from: {
+      coordinates: [158.720986, 55.915038],
+    },
+    to: {
+      coordinates: [158.719086, 55.904238],
+    },
+  },
+  {
+    from: {
+      coordinates: [158.719086, 55.904238],
+    },
+    to: {
+      coordinates: [158.723086, 55.902238],
+    },
+  },
+  {
+    from: {
+      coordinates: [158.723086, 55.902238],
+    },
+    to: {
+      coordinates: [158.725086, 55.894238],
+    },
+  },
+  {
+    from: {
+      coordinates: [158.725086, 55.894238],
+    },
+    to: {
+      coordinates: [158.733086, 55.892238],
+    },
+  },
+  {
+    from: {
+      coordinates: [158.733086, 55.892238],
+    },
+    to: {
+      coordinates: [158.747086, 55.892938],
+    },
+  },
+  {
+    from: {
+      coordinates: [158.747086, 55.892938],
+    },
+    to: {
+      coordinates: [158.751786, 55.897438],
+    },
+  },
+  {
+    from: {
+      coordinates: [158.751786, 55.897438],
+    },
+    to: {
+      coordinates: [158.753056, 55.895533],
+    },
+  },
+];
+const pointsCheremshankaData = [
+  {
+    name: 'беседка Начальная',
+    coordinates: [158.726986, 55.915038],
+    marker: 'campfire',
+  },
+  {
+    name: 'беседка Черемшанка',
+    coordinates: [158.753056, 55.895533],
+    marker: 'campfire',
+  },
+];

@@ -71,32 +71,32 @@ const Routes = () => {
     event.preventDefault();
     setAlertSuccess(null);
     setAlertDanger(null);
-    let validationErrors = false;
-    setInvalidY([]);
-    setInvalidX([]);
+    // let validationErrors = false;
+    // setInvalidY([]);
+    // setInvalidX([]);
 
-    markersY.forEach((markerY, index) => {
-      if (!Number(markerY)) {
-        setInvalidY((isInvalid) => [...isInvalid, true]);
-        validationErrors = true;
-      } else {
-        setInvalidY((isInvalid) => [...isInvalid, false]);
-      }
-    });
+    // markersY.forEach((markerY, index) => {
+    //   if (!Number(markerY)) {
+    //     setInvalidY((isInvalid) => [...isInvalid, true]);
+    //     validationErrors = true;
+    //   } else {
+    //     setInvalidY((isInvalid) => [...isInvalid, false]);
+    //   }
+    // });
+    //
+    // markersX.forEach((markerX, index) => {
+    //   if (!Number(markerX)) {
+    //     setInvalidX((isInvalid) => [...isInvalid, true]);
+    //     validationErrors = true;
+    //   } else {
+    //     setInvalidX((isInvalid) => [...isInvalid, false]);
+    //   }
+    // });
 
-    markersX.forEach((markerX, index) => {
-      if (!Number(markerX)) {
-        setInvalidX((isInvalid) => [...isInvalid, true]);
-        validationErrors = true;
-      } else {
-        setInvalidX((isInvalid) => [...isInvalid, false]);
-      }
-    });
-
-    if (validationErrors) {
-      setAlertDanger('Координаты должны быть числом');
-      return;
-    }
+    // if (validationErrors) {
+    //   setAlertDanger('Координаты должны быть числом');
+    //   return;
+    // }
 
     const axisesData = data?.getTrack.axises.map((axis, index) => ({
       id: axis.id,

@@ -50,14 +50,7 @@ const Tracks: React.FC = () => {
                     ({ timeInTrack }) =>
                       timeInTrack && timeInTrack.includes('Однодневный')
                   )
-                  .map(({ id, title, transport }) => (
-                    <TrackTitle
-                      trackId={id}
-                      trackTitle={title || ''}
-                      trackTransport={transport || ''}
-                      key={id}
-                    />
-                  ))
+                  .map((track) => <TrackTitle track={track} key={track.id} />)
               : undefined}
           </div>
           <div className={'col-6'}>
@@ -68,14 +61,7 @@ const Tracks: React.FC = () => {
                     ({ timeInTrack }) =>
                       !(timeInTrack && timeInTrack.includes('Однодневный'))
                   )
-                  .map(({ id, title, transport }) => (
-                    <TrackTitle
-                      trackId={id}
-                      trackTitle={title || ''}
-                      trackTransport={transport || ''}
-                      key={id}
-                    />
-                  ))
+                  .map((track) => <TrackTitle track={track} key={track.id} />)
               : undefined}
           </div>
         </div>

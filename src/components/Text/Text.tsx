@@ -7,7 +7,8 @@ type TextProps = {
 
 const Text: React.FC<TextProps> = ({ children }) => {
   if (children) {
-    const text = children.split('&n').join('\n').split(';').join('\n');
+    const rawText = children.split('/marker')[0];
+    const text = rawText.split('&n').join('\n').split(';').join('\n');
     return <div style={{ whiteSpace: 'pre-line' }}>{text}</div>;
   }
   return <></>;

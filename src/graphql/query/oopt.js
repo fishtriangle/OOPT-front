@@ -145,7 +145,7 @@ export const GET_OOPT_ABOUT = gql`
 `;
 
 export const GET_OOPT_TRACKS = gql`
-  query GetAllOOPTs($ooptUniqueInput: OoptUniqueInput!) {
+  query GetOOPT($ooptUniqueInput: OoptUniqueInput!) {
     getOOPT(ooptUniqueInput: $ooptUniqueInput) {
       id
       title
@@ -155,6 +155,12 @@ export const GET_OOPT_TRACKS = gql`
         timeInTrack
         transport
         disabled
+        axises {
+          id
+          title
+          axisX
+          axisY
+        }
       }
     }
   }
@@ -188,8 +194,15 @@ export const GET_OOPT_TOWNS = gql`
       title
       towns {
         id
+        description
         title
         disabled
+        axis {
+          id
+          title
+          axisX
+          axisY
+        }
       }
     }
   }
