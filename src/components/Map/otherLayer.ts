@@ -105,30 +105,30 @@ const otherLayer = () => {
     },
   });
 
-  const otherTexts = new TextLayer({
-    id: 'other-text-layer',
-    data: otherData,
-    // pickable: true,
-    fontFamily: 'Columba Ruby Pro',
-    characterSet: 'auto',
-    fontWeight: 500,
-    getPosition: () => currentLabel?.coordinates || [0, 0],
-    getText: () => currentLabel?.name || '',
-    updateTriggers: {
-      getPosition: () => currentLabel?.coordinates,
-      getText: () => currentLabel?.name,
-    },
-    getSize: 30,
-    getAngle: 0,
-    getTextAnchor: 'start',
-    getAlignmentBaseline: 'bottom',
-    getPixelOffset: [30, 10],
-    getColor: [255, 255, 255, 255],
-  });
+  // const otherTexts = new TextLayer({
+  //   id: 'other-text-layer',
+  //   data: otherData,
+  //   // pickable: true,
+  //   fontFamily: 'Columba Ruby Pro',
+  //   characterSet: 'auto',
+  //   fontWeight: 500,
+  //   getPosition: () => currentLabel?.coordinates || [0, 0],
+  //   getText: () => currentLabel?.name || '',
+  //   updateTriggers: {
+  //     getPosition: () => currentLabel?.coordinates,
+  //     getText: () => currentLabel?.name,
+  //   },
+  //   getSize: 30,
+  //   getAngle: 0,
+  //   getTextAnchor: 'start',
+  //   getAlignmentBaseline: 'bottom',
+  //   getPixelOffset: [30, 10],
+  //   getColor: [255, 255, 255, 255],
+  // });
 
   return {
     otherSigns,
-    otherTexts,
+    otherTexts: null,
   };
 };
 

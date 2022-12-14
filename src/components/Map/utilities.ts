@@ -42,18 +42,29 @@ export const createViewData = (data: ITown | IPoint | null): IViewState => {
 
 export const createTrackViewData = (data: ITrack | null): IViewState => {
   if (data) {
-    const axisX =
-      _.sum(data.axises.map(({ axisX }) => axisX)) /
-      data.axises.length /
-      1000000;
-    const axisY =
-      _.sum(data.axises.map(({ axisY }) => axisY)) /
-      data.axises.length /
-      1000000;
+    const maxY = _.max(data.axises.map(({ axisY }) => axisY));
+    const minY = _.min(data.axises.map(({ axisY }) => axisY));
+    const maxX = _.max(data.axises.map(({ axisX }) => axisX));
+    const minX = _.min(data.axises.map(({ axisX }) => axisX));
+
+    const axisY = ((maxY || 0) + (minY || 0)) / 2 / 1000000;
+    const axisX = ((maxX || 0) + (minX || 0)) / 2 / 1000000;
+
+    const zoom =
+      (maxX || 0) - (minX || 0) < 78000
+        ? 13
+        : (maxX || 0) - (minX || 0) < 150000
+        ? 12
+        : (maxX || 0) - (minX || 0) < 250000
+        ? 11
+        : (maxX || 0) - (minX || 0) < 350000
+        ? 10
+        : 9;
+
     return {
-      longitude: axisY + 0.08,
-      latitude: axisX + 0.008,
-      zoom: 13,
+      longitude: axisY + 0.08 * Math.pow(2, 13 - zoom),
+      latitude: axisX + 0.008 * Math.pow(2, 13 - zoom),
+      zoom,
       transitionDuration: 500,
     };
   }

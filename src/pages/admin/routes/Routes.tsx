@@ -199,12 +199,13 @@ const Routes = () => {
 
       <br />
       <form
-        className={`w-75 align-self-center h-80 ${
+        className={`w-75 align-self-center ${
           data?.getTrack.axises &&
           data?.getTrack.axises.length > 6 &&
           'add-scrollbar'
         }`}
         onSubmit={handleFormSubmit}
+        style={{ height: '1200px' }}
       >
         {data?.getTrack.axises &&
           data?.getTrack.axises.map((axis, index) => (

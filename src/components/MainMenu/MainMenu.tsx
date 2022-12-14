@@ -9,6 +9,7 @@ import {
   selectDescriptionBlockIsHide,
   selectType,
   setBlockType,
+  setCurrentTrackId,
   showBlock,
 } from '../../redux/slices/descriptionBlockSlice';
 import { useSelector } from 'react-redux';
@@ -43,6 +44,7 @@ const MainMenu: React.FC = () => {
         // dispatch(setCurrent({ current: null }));
         dispatch(setBlockType(selectedKey));
         dispatch(showBlock());
+        dispatch(setCurrentTrackId(0));
       }, 1000);
     } else {
       dispatch(setBlockType(selectedKey));

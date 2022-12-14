@@ -59,17 +59,19 @@ const ImageShow: React.FC = () => {
           slidesToShow={1}
         >
           {images &&
-            images.map(({ large, alt }, index: number) => (
-              <img
-                src={`${
-                  process.env.REACT_APP_API_URL_STATIC ||
-                  'http://localhost:4000/'
-                }${large}`}
-                alt={alt}
-                key={index}
-                width={'3400px'}
-                className={'btn border-0 shadow-none'}
-              />
+            images.map(({ large, alt, description }, index: number) => (
+              <div key={index} className={'position-relative'}>
+                <img
+                  src={`${
+                    process.env.REACT_APP_API_URL_STATIC ||
+                    'http://localhost:4000/'
+                  }${large}`}
+                  alt={alt}
+                  width={'3400px'}
+                  className={'btn border-0 shadow-none'}
+                />
+                <p className={styles.ImageShow_label}>{description}</p>
+              </div>
             ))}
         </Carousel>
       </div>

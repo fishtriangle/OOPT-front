@@ -27,10 +27,7 @@ export const UPDATE_POINT = gql`
 export const DELETE_POINT = gql`
   mutation DeletePoint($deletePointId: Float!) {
     deletePoint(id: $deletePointId) {
-      description
-      disabled
       id
-      route
       title
     }
   }

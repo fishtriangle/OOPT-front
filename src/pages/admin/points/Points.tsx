@@ -208,6 +208,7 @@ const Points: React.FC = () => {
     pointId: number
   ) => {
     event.preventDefault();
+    console.log(pointId);
 
     deletePoint({
       variables: { deletePointId: pointId },

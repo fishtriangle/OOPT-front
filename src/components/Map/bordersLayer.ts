@@ -95,12 +95,12 @@ const borders = new PolygonLayer({
   stroked: true,
   filled: true,
   wireframe: true,
-  lineWidthMinPixels: 1,
+  lineWidthMinPixels: 10,
   getPolygon: (d) => d.contour,
   getElevation: (d) => d.population / d.area / 10,
   getFillColor: (d) => [d.population / d.area / 60, 140, 0],
   getLineColor: [80, 80, 80],
-  getLineWidth: 3,
+  getLineWidth: 10,
   opacity: 0.05,
 });
 

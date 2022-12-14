@@ -20,6 +20,7 @@ import {
 import { useAppDispatch } from '../../redux/store';
 import {
   hideBlock,
+  selectCurrentTrackId,
   selectDescriptionBlockIsHide,
   setBlockType,
   setCurrentPointId,
@@ -31,6 +32,7 @@ const pointsLayer = (): { pointsSigns: any; pointsTexts: any } => {
   const ooptIndex = 2;
 
   const currentLabel = useSelector(selectCurrentLabel);
+  const currentTrackId = useSelector(selectCurrentTrackId);
   const isDescriptionHide = useSelector(selectDescriptionBlockIsHide);
   const dispatch = useAppDispatch();
 
@@ -62,7 +64,8 @@ const pointsLayer = (): { pointsSigns: any; pointsTexts: any } => {
     ({ disabled }) => !disabled
   );
 
-  const pointsData = points?.map((point) => createLayerData(point));
+  const pointsData =
+    currentTrackId === 0 ? points?.map((point) => createLayerData(point)) : [];
 
   const onClick = (info: any) => {
     dispatch(setCurrentLabel(info.object));
@@ -103,7 +106,7 @@ const pointsLayer = (): { pointsSigns: any; pointsTexts: any } => {
       // @ts-ignore
       getSize: (d) => (d.name === currentLabel?.name ? 95 : 65),
     },
-    onClick: (info) => onClick(info),
+    onClick,
   });
 
   const pointsTexts = new TextLayer({

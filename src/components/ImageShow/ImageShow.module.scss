@@ -42,4 +42,15 @@
     width: 60px;
     height: 60px;
   }
+
+  &_label {
+    position: absolute;
+    bottom: 30px;
+    left: 60px;
+    color: black;
+    background-color: #ccc;
+    border: solid;
+    border-radius: 15px;
+    padding: 5px 15px;
+  }
 }

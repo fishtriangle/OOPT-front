@@ -1,18 +1,21 @@
-import { LineLayer } from '@deck.gl/layers/typed';
+import { LineLayer, IconLayer, TextLayer } from '@deck.gl/layers/typed';
 
-import {
-  IGetOOPT,
-  IGetOOPTVars,
-  IGetTrack,
-  IGetTrackVars,
-  ITrack,
-} from '../../common/types';
+import { IGetTrack, IGetTrackVars, ITrack } from '../../common/types';
 import { useQuery } from '@apollo/client';
 import { useSelector } from 'react-redux';
 import { useAppDispatch } from '../../redux/store';
-import { selectCurrentTrackId } from '../../redux/slices/descriptionBlockSlice';
+import {
+  selectCurrentTrackId,
+  selectDescriptionBlockIsHide,
+} from '../../redux/slices/descriptionBlockSlice';
 import { GET_TRACK } from '../../graphql/query/track';
-import { GET_OOPT_TRACKS } from '../../graphql/query/oopt';
+import iconAtlas from './iconsmap.png';
+import { ICON_MAPPING } from './variables';
+import { createLayerData } from './utilities';
+import {
+  selectCurrentLabel,
+  setCurrentLabel,
+} from '../../redux/slices/currentLabelSlice';
 
 interface ILinePoint {
   from: {
@@ -32,6 +35,9 @@ const tracksLayer = (): {
   const ooptIndex = 2;
   const trackId = useSelector(selectCurrentTrackId);
   const dispatch = useAppDispatch();
+
+  const currentLabel = useSelector(selectCurrentLabel);
+  const isDescriptionHide = useSelector(selectDescriptionBlockIsHide);
 
   const { data, loading, error } = useQuery<IGetTrack, IGetTrackVars>(
     GET_TRACK,
@@ -60,7 +66,7 @@ const tracksLayer = (): {
   }
 
   const track: ITrack | undefined = data?.getTrack;
-  console.log(track);
+
   const trackLinesData = track?.axises
     ? track?.axises.reduce((trackLines, axis, index, axises) => {
         if (index !== 0) {
@@ -86,35 +92,14 @@ const tracksLayer = (): {
       }, [] as ILinePoint[])
     : [];
 
-  console.log(trackLinesData);
+  const pointsData = track?.stops?.map((point) => {
+    return createLayerData(point);
+  });
 
-  // const pointsData = points?.map((point) => createLayerData(point));
-  //
-  // const onClick = (info: any) => {
-  //   dispatch(setCurrentLabel(info.object));
-  //   const viewState = {
-  //     longitude: info.object.coordinates[0] + 0.3,
-  //     latitude: info.object.coordinates[1] + 0.04,
-  //     zoom: 11,
-  //     transitionDuration: 500,
-  //   };
-  //
-  //   dispatch(setCurrentViewState(viewState));
-  //
-  //   if (!isDescriptionHide) {
-  //     dispatch(hideBlock());
-  //     setTimeout(() => {
-  //       dispatch(setCurrentPointId(info.object.index));
-  //       dispatch(setBlockType(EnumDescriptionBlock.POINT));
-  //       dispatch(showBlock());
-  //     }, 1000);
-  //   } else {
-  //     dispatch(setCurrentPointId(info.object.index));
-  //     dispatch(setBlockType(EnumDescriptionBlock.POINT));
-  //     dispatch(showBlock());
-  //   }
-  // };
-  //
+  const onClick = (info: any) => {
+    dispatch(setCurrentLabel(info.object));
+  };
+
   const trackLines = new LineLayer({
     id: 'track-lines-layer',
     data: trackId ? trackLinesData : [],
@@ -124,31 +109,44 @@ const tracksLayer = (): {
     getTargetPosition: (d: any) => d.to.coordinates,
     getColor: (d) => d.color,
   });
-  //
-  // const pointsTexts = new TextLayer({
-  //   id: 'points-text-layer',
-  //   data: pointsData,
-  //   fontFamily: 'Columba Ruby Pro',
-  //   characterSet: 'auto',
-  //   fontWeight: 500,
-  //   getPosition: () => currentLabel?.coordinates || [0, 0],
-  //   getText: () => currentLabel?.name || '',
-  //   updateTriggers: {
-  //     getPosition: () => currentLabel?.coordinates,
-  //     getText: () => currentLabel?.name,
-  //   },
-  //   getSize: 30,
-  //   getAngle: 0,
-  //   getTextAnchor: 'start',
-  //   getAlignmentBaseline: 'bottom',
-  //   getPixelOffset: [30, 10],
-  //   getColor: [255, 255, 255, 255],
-  // });
+
+  const trackSigns = new IconLayer({
+    id: 'track-signs-layer',
+    data: trackId ? pointsData : [],
+    pickable: true,
+    iconAtlas: iconAtlas,
+    iconMapping: ICON_MAPPING,
+    getIcon: (d) => d.marker,
+    getPosition: (d) => d.coordinates,
+    getSize: (d) => 65,
+    onClick,
+  });
+
+  const trackTexts = new TextLayer({
+    id: 'track-text-layer',
+    data: trackId ? pointsData : [],
+    fontFamily: 'Columba Ruby Pro',
+    characterSet: 'auto',
+    fontWeight: 500,
+    maxWidth: 1100,
+    getPosition: () => currentLabel?.coordinates || [0, 0],
+    getText: () => currentLabel?.name || '',
+    updateTriggers: {
+      getPosition: () => currentLabel?.coordinates,
+      getText: () => currentLabel?.name,
+    },
+    getSize: 30,
+    getAngle: 0,
+    getTextAnchor: 'start',
+    getAlignmentBaseline: 'bottom',
+    getPixelOffset: [30, 10],
+    getColor: [255, 255, 255, 255],
+  });
 
   return {
-    trackSigns: null,
+    trackSigns: trackSigns,
     trackLines,
-    trackTexts: null,
+    trackTexts,
   };
 };
 

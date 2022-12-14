@@ -1,6 +1,6 @@
 import React from 'react';
 import { useQuery } from '@apollo/client';
-import { IGetTrack, IGetTrackVars } from '../../common/types';
+import { IGetTrack, IGetTrackVars, IPoint } from '../../common/types';
 import Loader from '../Loader/Loader';
 import Text from '../Text/Text';
 import { GET_TRACK } from '../../graphql/query/track';
@@ -14,9 +14,15 @@ import distanceImg from './distance.png';
 import houseImg from './house.png';
 import timerImg from './timer.png';
 import { TrackIcons } from '../TrackIcons/TrackIcons';
+import { createLayerData, createViewData } from '../Map/utilities';
+import { setCurrentLabel } from '../../redux/slices/currentLabelSlice';
+import { setCurrentViewState } from '../../redux/slices/currentViewStateSlice';
+import { useAppDispatch } from '../../redux/store';
 
 export const Track: React.FC = () => {
   const trackId = useSelector(selectCurrentTrackId);
+
+  const dispatch = useAppDispatch();
 
   const { data, loading, error } = useQuery<IGetTrack, IGetTrackVars>(
     GET_TRACK,
@@ -38,6 +44,11 @@ export const Track: React.FC = () => {
         <p>{error.message}</p>
       </>
     );
+
+  const handleChangeViewClick = (point: IPoint) => {
+    const viewData = createViewData(point);
+    dispatch(setCurrentViewState(viewData));
+  };
 
   const photos = data?.getTrack.photos;
 
@@ -71,7 +82,7 @@ export const Track: React.FC = () => {
             <p className={'fw-bold m-0'}>
               Предполагаемое время прохождения маршрута
             </p>
-            <p className={'m-0'}>{data?.getTrack.length}</p>
+            <p className={'m-0'}>{data?.getTrack.timeInTrack}</p>
           </div>
         </div>
         <div className={'col-1'} />
@@ -89,11 +100,18 @@ export const Track: React.FC = () => {
           <div className={'d-flex flex-column mt-3'}>
             <img src={houseImg} alt={''} width={60} height={60} />
             <p className={'fw-bold m-0'}>Места стоянок</p>
-            <p className={'m-0'}>
+            <div className={'m-0'}>
               {data && data.getTrack.stops.length > 0
-                ? data?.getTrack.stops.map(({ title }) => title).join(', ')
+                ? data?.getTrack.stops.map((point) => (
+                    <p
+                      onClick={() => handleChangeViewClick(point)}
+                      key={point.id}
+                    >
+                      {point.title}
+                    </p>
+                  ))
                 : 'отсутствуют'}
-            </p>
+            </div>
           </div>
         </div>
       </div>

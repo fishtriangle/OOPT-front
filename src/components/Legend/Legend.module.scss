@@ -1,0 +1,64 @@
+.container {
+  position: absolute;
+  display: flex;
+  flex-wrap: nowrap;
+  bottom: 60px;
+  left: 60px;
+  height: 430px;
+  width: 1270px;
+  background: 34px 15px no-repeat url("./background - lines.png"), rgba(255, 255, 255,0.85);
+  transition: transform 0.8s;
+
+  &_inner {
+    padding: 0 50px 0 50px;
+    color: black;
+    //width: 1640px;
+  }
+
+  &__hide {
+    transform: translateY(520px);
+  }
+}
+
+.clsBtn {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+}
+
+.iBtn {
+  color: black;
+  position: absolute;
+  background-color: #E0E671;
+  font-size: 126px;
+  padding: 10px 50px;
+  border-radius: 126px;
+  font-weight: 1000;
+  line-height: 1em;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
+  left: 60px;
+  bottom: 50px;
+  transition: transform 0.2s;
+
+  &__hide {
+    transform: scale(0%);
+  }
+}
+
+.title {
+  font-size: 64px;
+  font-weight: 700;
+  line-height: 1em;
+  margin-left: 83px;
+  margin-top: 5px;
+  margin-bottom: 90px;
+}
+
+.text {
+  font-size: 24px;
+  line-height: 1em;
+  margin-bottom: 0;
+  margin-left: 10px;
+  max-width: 130px;
+  align-self: end;
+}

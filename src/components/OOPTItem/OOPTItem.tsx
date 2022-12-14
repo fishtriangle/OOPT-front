@@ -54,17 +54,17 @@ const OOPTItem: React.FC<Props> = ({
             !photos || photos.length === 0
               ? styles.text__long
               : styles.text__short
-          } add-scrollbar`}
+          } add-scrollbar position-relative`}
           onScroll={onScroll}
           ref={textInnerRef}
         >
           {children}
+          <div
+            className={`${styles.fader} ${
+              isFaded ? styles.fader__hide : styles.fader__show
+            } ${disableFader && 'd-none'}`}
+          />
         </div>
-        <div
-          className={`${styles.fader} ${
-            isFaded ? styles.fader__hide : styles.fader__show
-          } ${disableFader && 'd-none'}`}
-        />
       </div>
 
       <div className={`align-self-center ${styles.carousel}`}>

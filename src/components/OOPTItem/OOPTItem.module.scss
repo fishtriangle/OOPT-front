@@ -20,10 +20,10 @@
 }
 
 .fader {
-  position: absolute;
+  position: sticky;
   bottom: -1px;
-  width: 92%;
-  height: 400px;
+  width: 100%;
+  height: 200px;
   background: linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(0,0,0,0) 100%);
   transition: opacity 0.2s;
 
